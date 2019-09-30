@@ -1,38 +1,9 @@
 <template>
   <div class="voltron">
     <div class="tickers">
-      <section class="ticker__container">
-        <ul class="list--plain ticker" id="ticker01">
-          <li class="ticker__item">
-            <div>"Twenty years from now, you will be more disappointed by the things that you didn't do than by the ones
-              you did do. So throw off the bowlines. Sail away from the safe harbor. Catch the trade winds in your
-              sails.
-              Explore. Dream. Then, gaze at the stars and realize you're in a simulation."
-            </div>
-          </li>
-          <li class="ticker__item">
-            <div>"Twenty years from now, you will be more disappointed by the things that you didn't do than by the ones
-              you did do. So throw off the bowlines. Sail away from the safe harbor. Catch the trade winds in your
-              sails.
-              Explore. Dream. Then, gaze at the stars and realize you're in a simulation."
-            </div>
-          </li>
-          <li class="ticker__item">
-            <div>"Twenty years from now, you will be more disappointed by the things that you didn't do than by the ones
-              you did do. So throw off the bowlines. Sail away from the safe harbor. Catch the trade winds in your
-              sails.
-              Explore. Dream. Then, gaze at the stars and realize you're in a simulation."
-            </div>
-          </li>
-          <li class="ticker__item">
-            <div>"Twenty years from now, you will be more disappointed by the things that you didn't do than by the ones
-              you did do. So throw off the bowlines. Sail away from the safe harbor. Catch the trade winds in your
-              sails.
-              Explore. Dream. Then, gaze at the stars and realize you're in a simulation."
-            </div>
-          </li>
-        </ul>
-      </section>
+
+      <Announcement />
+
       <section class="ticker__container">
         <ul class="list--plain ticker" id="ticker02">
           <li class="ticker__item">
@@ -86,7 +57,7 @@
       <Vacations/>
     </aside>
 
-    <Announcement/>
+    <Alert/>
 
   </div>
 </template>
@@ -96,50 +67,44 @@
     import Birthdays from "../components/widgets/Birthdays";
     import Events from "../components/widgets/Events";
     import Vacations from "../components/widgets/Vacations";
+    import Alert from "../components/Alert";
     import Announcement from "../components/Announcement";
 
     export default {
         components: {
+            Announcement,
             Events,
             Birthdays,
             Weather,
             Vacations,
-            Announcement
+            Alert
         },
         methods: {
-            getAnnouncements: function () {
+            loadData: function () {
                 let _this = this;
-                this.$socket.get('/announcement',
-                    (body, response) => {
-                        _this.$store.commit('announcement/set', body);
+
+                ["announcement", "alert"]
+                    .forEach(function (api) {
+                        _this.$socket.get(`/${api}`,
+                            (body, response) => {
+                                _this.$store.commit(`${api}/set`, body);
+                            });
                     });
             },
-            startSlider: () => {
-                let slider01 = tns({
-                    container: '#ticker01',
-                    items: 1,
-                    slideBy: 'page',
-                    controls: false,
-                    nav: false,
-                    autoplayButtonOutput: false,
-                    speed: 3000,
-                    autoplay: true,
-                    autoplayTimeout: 5000
-                });
-            },
-
             registerSocketEvents: function () {
                 let _this = this;
-                this.$socket.on("announcement", res => {
-                    console.log(res);
-                    _this.$store.commit(`announcement/${res.verb}`, res.data)
-                });
+
+                ["announcement", "alert"]
+                    .forEach(function (api) {
+                        _this.$socket.on(api, res => {
+                            _this.$store.commit(`${api}/${res.verb}`, res.data)
+                        });
+                    });
             }
         },
         mounted() {
-            this.startSlider();
-            this.getAnnouncements();
             this.registerSocketEvents();
+            this.loadData();
         }
     }
 </script>

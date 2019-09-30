@@ -1,23 +1,23 @@
 /**
- * Announcement.js
+ * Alert.js
  *
  * @description :: A model definition represents a database table/collection.
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
-let moment = require("moment");
+const AlertSeverity = {
+  Low: 'Low',
+  Medium: 'Medium',
+  High: 'High',
+  Critical: 'Critical'
+};
 
 module.exports = {
 
   attributes: {
     message: {type: 'string', required: true},
-    expiresAt: {
-      type: 'ref',
-      columnType: 'datetime',
-      defaultsTo: moment()
-        .add(3, 'days')
-        .unix()
-    }
+    severity: {type: 'string', defaultsTo: AlertSeverity.Low},
+    active: {type: 'boolean', defaultsTo: true}
   },
 
 };

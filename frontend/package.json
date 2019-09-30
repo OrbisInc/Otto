@@ -16,7 +16,8 @@
     "socket.io-client": "^2.3.0",
     "vue": "^2.6.10",
     "vue-native-websocket": "^2.0.13",
-    "vue-socket.io": "^3.0.7"
+    "vue-socket.io": "^3.0.7",
+    "vue-tiny-slider": "^0.1.35"
   },
   "devDependencies": {}
 }

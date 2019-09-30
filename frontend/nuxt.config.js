@@ -29,6 +29,7 @@ export default {
   */
   plugins: [
     { src: '~/plugins/vue-socket.io.js', ssr: false },
+    { src: '~/plugins/vue-tiny-slider.js', mode: 'client' }
   ],
   /*
   ** Nuxt.js dev-modules
