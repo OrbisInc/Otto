@@ -9,6 +9,13 @@
             <button type="button" class="modal__btn--close js--close--modal" @click="isOpen = false;"><i class="material-icons">close</i></button>
             <h3 class="modal__title">Add an {{ this.actionType }}</h3>
             <p>{{ this.actionType }}:</p>
+<!-- 
+            <template v-if="this.actionType == 'dAnnouncement'">
+                  <p> Select an announcement to delete: </p>
+                  <div class="display--flex width--100" v-for="m in announcements">
+                    <input type="checkbox" :value="m.id" v-model="deletionIDs" class="ticker__item margin--r--l"> {{m.message}}
+                  </div>
+            </template> -->
 
             <template v-if="this.actionType == 'Announcement' || this.actionType == 'Alert' ">
                 <div class="display--flex flex--column">
@@ -66,7 +73,8 @@
             </template>
 
             <br>
-            <button class="btn__default--text btn--info" type="button" @click="postRequest">Submit</button>
+            <button v-if="this.actionType != 'dAnnouncement'" class="btn__default--text btn--info" type="button" @click="postRequest">Add</button>
+            <button v-if="this.actionType == 'dAnnouncement'" class="btn__default--text btn--info" type="button" @click="deleteRequest">Delete</button>
           </div>
 
         </div>
@@ -95,6 +103,9 @@
         <div class="nav--interaction__item">
           <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/vacation", "Vacation")'>Add Vacation</button>
         </div>        
+        <!-- <div class="nav--interaction__item">
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/announcement", "dAnnouncement")'>Delete Announcement</button>
+        </div>     -->
       </div>
     </nav>
   </div>
@@ -117,6 +128,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               eventTitle: '',
               eventType: '',
 
+              deletionIDs: [],
               expirationDate: '',
 
               startDate: '',
@@ -169,16 +181,66 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
                 });
                 this.isOpen = false;
           },
-
+          //  deleteRequest() {
+          //   console.log(this.deletionIDs)
+          //   for(var i = 0; i < this.deletionIDs.length; i++) {
+          //     console.log(this.deletionIDs[i]);
+          //     var headers = {
+          //      "Content-Type": "application/json"                         
+          //    }
+          //   var data = {
+          //     message: this.message,
+          //     name: this.name,
+          //     date: this.startDate,
+          //     title: this.eventTitle,
+          //     id: this.deletionIDs[i],
+          //     type: this.eventType,
+          //     startDate: this.startDate,
+          //     endDate: this.endDate,
+          //     startsAt: this.startDate + this.startTime,
+          //     endsAt: this.endDate + this.endTime,
+          //     expiresAt: this.expirationDate,
+          //   }
+          //   fetch(this.url, {
+          //     method: "DELETE",
+          //     headers: headers,
+          //     body:  JSON.stringify(data)
+          //       })
+          //       .then((response) => { 
+          //         return response.json();
+          //         this.announcement = ''
+          //       });
+          //   }
+          //   this.isOpen = false;
+          // },
           openModal: function(route, actionType) {
               this.url = route;
               this.actionType = actionType;
               this.isOpen = true;
+          }
+        },
+      computed: {
+          announcements: {
+            cache: false,
+            get: function() {         
+              this.numberOfSlides = this.$store.state.announcement.all.length;
+              return this.$store
+                  .state
+                  .announcement
+                  .all
+            }
           }
         }
     }
 </script>
 
 <style scoped>
+.modal__inner, .modal__title, .modal__btn--close {
+  background-color: #555555;
+}
 
+.modal__title, .modal__btn--close { 
+  color: #d8d8d8;
+
+}
 </style>

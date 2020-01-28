@@ -1,3 +1,8 @@
+<!-- The component widget for the vacations pane (bottom of the Right hand side). This component is used for displaying vacations from
+a database. There are multiple methods used here. Some of the methods are helper methods for simple use such as getting dates - the other methods are to construct
+a series of arrays to display the data in the way we want.
+ -->
+
 <template>
   <div class="ticker__item in--sidebar padding--a--s noBorder ">
     Currently on Vacation:
@@ -27,17 +32,6 @@ import schedule from 'node-schedule'
           }
         },
         methods: {
-          dbMaintenance: function() {
-            schedule.scheduleJob('55 * * * *', function(){
-            console.log("Checked!");
-            console.log(this.vacations);
-            for(var i = 0; i < this.vacations.length; i++) {
-              if (this.compareDates(this.vacations[i].endDate, this.getCurrentDate())) {
-                this.deleteVacation(this.vacations[i].id);
-              }
-            }
-          });
-          },
           getCurrentDate: function() {
             return new Date().toJSON().slice(0,10).replace(/-/g,'-');
           },
@@ -59,6 +53,9 @@ import schedule from 'node-schedule'
               return false
             }
           },
+
+          // This function will duplicate the vacations array - and then filter through the array for elements that only occur within the next three months.
+          // Additionally, it will only populate up to four.
           createCutOffVacations: function() {
             let futureDate = this.getCutOffDate();
             let testArray = [...this.vacations];
@@ -77,7 +74,10 @@ import schedule from 'node-schedule'
             }
             return finalArray
           },
-          createCurrentVacations: function() {
+
+          // This function will take in the vacations from the createCutOffVacations method - and then sort it into the current'vacations and 
+          // upcoming vacations by comparing dates. This returns two arrays.
+          splitArrays: function() {
             let currentVacations = [];
             let upcomingVacations = [];
             for(var i = 0; i < this.cutOffVacationArray.length; i++) {
@@ -87,15 +87,17 @@ import schedule from 'node-schedule'
                 upcomingVacations.push(this.cutOffVacationArray[i]);
               }
             }
-            var sortedArray = currentVacations.sort((a, b) => new Date(a.endDate) - new Date(b.endDate))
-            var sortedArray2 = upcomingVacations.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-            return [sortedArray, sortedArray2]
+            var currentArray = currentVacations.sort((a, b) => new Date(a.endDate) - new Date(b.endDate))
+            var upcomingArray = upcomingVacations.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+            return [currentArray, upcomingArray]
           },
+
+          // This function will call both previous functions to construct the arrays we want to display.
           createVacationsArray: function() {
             if (this.vacations.length != 0) {
               this.cutOffVacationArray = this.createCutOffVacations();
               if (this.cutOffVacationArray != 0) {
-                var values = this.createCurrentVacations()
+                var values = this.splitArrays()
                 this.currentVacationsArray = values[0];
                 this.upcomingVacationsArray = values[1];
               }
@@ -123,21 +125,25 @@ import schedule from 'node-schedule'
               body:  JSON.stringify(data)
                 })
           },
-          deletionScan() {
-             setInterval(() => {
-                for(var i = 0; i < this.vacations.length; i++) {
-                  if (this.compareDates(this.vacations[i].endDate, this.getCurrentDate())) {
-                    console.log(this.vacations[i].endDate + '<' + this.getCurrentDate())
-                    this.deleteVacation(this.vacations[i].id);
-                    this.vacations.splice(i, i);
+
+          // The node-scheduler will repeat given the schedule given.
+          scheduledDatabaseMaintenance: function() {
+            var self = this;
+            schedule.scheduleJob('*/1 * * * *', function(){
+              console.log("Vacation Called.")
+              for(var i = 0; i < self.vacations.length; i++) {
+                  if (self.compareDates(self.vacations[i].endDate, self.getCurrentDate())) {
+                    console.log(self.vacations[i].endDate + '<' + self.getCurrentDate())
+                    self.deleteVacation(self.vacations[i].id);
+                    self.vacations.splice(i, i);
                   }
                 }
-             }, 10000);
-          }
+              });
+          },
         },
         mounted: function() {
           this.createVacationsArray();
-          this.deletionScan();
+          this.scheduledDatabaseMaintenance();
         },
         computed: {
           vacations : {

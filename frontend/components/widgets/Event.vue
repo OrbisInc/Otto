@@ -1,3 +1,8 @@
+<!-- The component widget for the events pane (bottom of the Right hand side). This component is used for displaying an event from
+the database. There are multiple methods used here. Some of the methods are helper methods for simple use such as getting dates - the other methods are to construct
+a series of arrays to display the data in the way that we want.
+ -->
+
 <template>
     <div class="ticker__item in--sidebar padding--a--s noBorder">
     
@@ -25,6 +30,7 @@
 </template>
 
 <script>
+import schedule from 'node-schedule'
 import EventItem from "../childComponents/EventItem";
 export default {
     name: "Event",
@@ -42,15 +48,6 @@ export default {
         getCurrentDate: function() {
             return new Date().toJSON().slice(0, 10).replace(/-/g, '-');
         },
-        // getCutOffDate: function() {
-        //   var futureWindow = 4;
-        //   var date = new Date();
-        //   var dd = date.getDate();
-        //   var mm = '0' + (date.getMonth() + futureWindow);
-        //   var y = date.getFullYear();
-        //   var finalDate = y + '-'+ mm + '-'+ dd;
-        //   return finalDate;
-        // },
         compareDates: function(date1, date2) {
             var d1 = Date.parse(date1);
             var d2 = Date.parse(date2);
@@ -69,6 +66,8 @@ export default {
                 return false
             }
         },
+
+        // This function will duplicate the events array, sort the array, and then construct a new array with the three upcoming.
         createCutOffEvents: function() {
             let temporaryArray = [...this.events]
             let pushArray = temporaryArray.sort((a, b) => new Date(a.startsAt.slice(0, 10)) - new Date(b.startsAt.slice(0, 10)))
@@ -82,7 +81,8 @@ export default {
             return finalArray
         },
 
-        createCurrentEvents: function() {
+        // This function will split the cutOffArray into two arrays by comparing the dates. The events currently happening, and the events upcoming.
+        splitArrays: function() {
             let currentEvents = [];
             let upcomingEvents = [];
             for (var i = 0; i < this.cutOffEventArray.length; i++) {
@@ -94,11 +94,13 @@ export default {
             }
             return [currentEvents, upcomingEvents]
         },
+
+        // This function will call the previous methods to construct the arrays wanted.
         createEventsArray: function() {
             if (this.events.length != 0) {
                 this.cutOffEventArray = this.createCutOffEvents();
                 if (this.cutOffEventArray != 0) {
-                    var values = this.createCurrentEvents()
+                    var values = this.splitArrays()
                     this.currentEvents = values[0];
                     this.upcomingEvents = values[1];
                 }
@@ -126,20 +128,24 @@ export default {
                 body: JSON.stringify(data)
             })
         },
-        deletionScan() {
-             setInterval(() => {
-                for(var i = 0; i < this.events.length; i++) {
-                  if (this.compareDates(this.events[i].startsAt.slice(0, 10), this.getCurrentDate())) {
-                    this.deleteEvent(this.events[i].id);
-                    this.events.splice(i, i);
+
+        // The node-scheduler will repeat given the schedule given.
+        scheduledDatabaseMaintenance: function() {
+            var self = this;
+            schedule.scheduleJob('*/1 * * * *', function(){
+                console.log("Event Called.")
+                for(var i = 0; i < self.events.length; i++) {
+                  if (self.compareDates(self.events[i].startsAt.slice(0, 10), self.getCurrentDate())) {
+                    self.deleteEvent(self.events[i].id);
+                    self.events.splice(i, i);
                   }
                 }
-             }, 10000);
-          }
+              });
+        },
     },
     mounted() {
         this.createEventsArray();
-        this.deletionScan();
+        this.scheduledDatabaseMaintenance();
     },
     computed: {
         events: {

@@ -1,3 +1,8 @@
+<!-- The component widget for the weather pane. This component is used for displaying the current weather from an API (openweather). The 
+component is used to fetch information from the API using a key. The Fetch API method is then scheduled to repeat at a certain interval 
+set in in the methods below. The current date is displayed in a method below as well.
+ -->
+
 <template>
   <div class="ticker__item in--sidebar padding--a--s noBorder containerColor">
     <p class="weatherData"> Overcast: {{ this.overcast }} </p>
@@ -43,23 +48,22 @@
                 this.overcast = jsonData.list[0].weather[0].main
               })
           },
-          scheduleDate: function() {
-            // schedule.scheduleJob('54 * * * *', function(){
-            //     console.log(window);
-            //     console.log("Called.");
-            //     this.weatherAPICall();
-            //     this.currentDate = this.getDate();
-            //   });
-             setInterval(() => {
-               console.log("Weather Called");
-               this.weatherAPICall();
-             }, 100000);
+
+          // The node-scheduler will repeat given the schedule given.
+          scheduledWeatherAPICall: function() {
+            var self = this;
+            schedule.scheduleJob('*/1 * * * *', function(){
+                console.log("Weather Called.");
+                self.weatherAPICall();
+                self.currentDate = self.getDate();
+              });
           }
         },
+        // Initializing the module by giving the starting values, and starting the scheduled API Call.
         mounted() {
           this.weatherAPICall();
           this.currentDate = this.getDate();
-          this.scheduleDate();
+          this.scheduledWeatherAPICall();
         }
     }
 </script>

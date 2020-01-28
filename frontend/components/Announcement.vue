@@ -82,27 +82,27 @@ import Vue from 'vue'
               method: "DELETE",
               headers: headers,
               body:  JSON.stringify(data)
-                })
+            })
           },
-          deletionCheck() {
-             setInterval(() => {
-              console.log("Announcements Checked!");
-              console.log(this.announcements);
-              for(var i = 0; i < this.announcements.length; i++) {
-                if (this.compareDates(this.announcements[i].expiresAt, this.getCurrentDate())) {
+          scheduledDatabaseMaintenance: function() {
+            var self = this;
+            schedule.scheduleJob('*/1 * * * *', function(){
+              console.log("Announcements Called.");
+              for(var i = 0; i < self.announcements.length; i++) {
+                if (self.compareDates(self.announcements[i].expiresAt, self.getCurrentDate())) {
                   console.log("DELETED")
-                  console.log(this.announcements[i].id)
-                  this.deleteAnnouncement(this.announcements[i].id);
-                  this.announcements.splice(i, i);
+                  console.log(self.announcements[i].id)
+                  self.deleteAnnouncement(self.announcements[i].id);
+                  self.announcements.splice(i, i);
                 }
               }
-             }, 10000);
-          }
+              });
+          },
         },
         mounted() {
-         this.deletionCheck();
+         this.scheduledDatabaseMaintenance();
         },
-        watch : {
+        watch: {
           numberOfSlides : function(val, oldVal){
             if(val != oldVal)
             {
@@ -111,7 +111,7 @@ import Vue from 'vue'
           }
         },
         computed: {
-          announcements : {
+          announcements: {
             cache: false,
             get: function() {         
               this.numberOfSlides = this.$store.state.announcement.all.length;

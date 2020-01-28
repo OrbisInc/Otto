@@ -38,8 +38,10 @@ This pane is used to display information about ZenDesk to the users.
 
 
 <script>
+import schedule from 'node-schedule'
+
 export default {
-  name: "Jira",
+  name: "ZenDesk",
   data() {
     return {
       zenDeskJson: "5",
@@ -51,11 +53,11 @@ export default {
   },
   methods: {
     zenDeskAPICall: function() {
-      // let useremail = 'coopthree@orbiscommunications.com'
-      // let api_token = 'tAe1rrWGwsJgboUXjIgH13DA'
-      // let encodedHeader = btoa(useremail + ':' + api_token)
+      let useremail = 'coopthree@orbiscommunications.com'
+      let password = 'tAe1rrWGwsJgboUXjIgH13DA'
+      let encodedHeader = btoa(useremail + ':' + password)
       var headers = {
-        Authorization: "Basic ",
+        Authorization: "Basic " + password,
         "Content-Type": "application/json"
       };
       fetch(
@@ -76,10 +78,12 @@ export default {
         });
     },
     scheduleDate: function() {
-      setInterval(() => {
+      var self = this;
+      schedule.scheduleJob('*/1 * * * *', function(){
+        console.log("ZenDesk Called.");
         this.zenDeskAPICall();
-      }, 100000);
-    }
+      });
+    },
   },
   mounted() {
     //  this.scheduleDate();
