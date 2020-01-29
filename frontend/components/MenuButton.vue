@@ -26,6 +26,24 @@
                     <input required v-model="expirationDate" name="expirationDate" class="ticker__item margin--r--l" type="date">
                   </div>
             </template>
+
+            
+            <template v-if="this.actionType == 'Deployment'">
+              <div>
+                  <label class="width--100">School: </label>
+                  <textarea required v-model="school" name="message" placeholder="Enter the school" class="ticker__item width--100" autofocus></textarea>
+                  <label class="width--100">Message: </label>
+                  <textarea v-model="message" name="message" placeholder="Enter the message" class="ticker__item width--100" autofocus></textarea>
+                  <label class="width--100">Deployment Date: </label>
+                  <div class="display--flex width--100">
+                    <input required v-model="deploymentDate" class="ticker__item margin--r--l" type="date" name="bday">
+                  </div>
+                  <label class="width--100"> Expires On: </label>
+                  <div class="display--flex width--100">
+                    <input required v-model="expirationDate" name="expirationDate" class="ticker__item margin--r--l" type="date">
+                  </div>
+              </div>
+            </template>
             
             <template v-if="this.actionType == 'Birthday'">
                <div class="display--flex flex--column">
@@ -74,7 +92,7 @@
 
             <br>
             <button v-if="this.actionType != 'dAnnouncement'" class="btn__default--text btn--info" type="button" @click="postRequest">Add</button>
-            <button v-if="this.actionType == 'dAnnouncement'" class="btn__default--text btn--info" type="button" @click="deleteRequest">Delete</button>
+            <!-- <button v-if="this.actionType == 'dAnnouncement'" class="btn__default--text btn--info" type="button" @click="deleteRequest">Delete</button> -->
           </div>
 
         </div>
@@ -102,10 +120,10 @@
         </div>
         <div class="nav--interaction__item">
           <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/vacation", "Vacation")'>Add Vacation</button>
-        </div>        
-        <!-- <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/announcement", "dAnnouncement")'>Delete Announcement</button>
-        </div>     -->
+        </div>      
+        <div class="nav--interaction__item">
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/deployment", "Deployment")'>Add Deployment</button>
+        </div>    
       </div>
     </nav>
   </div>
@@ -128,7 +146,8 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               eventTitle: '',
               eventType: '',
 
-              deletionIDs: [],
+              school: '',
+              deploymentDate: '',
               expirationDate: '',
 
               startDate: '',
@@ -164,6 +183,8 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               date: this.startDate,
               title: this.eventTitle,
               type: this.eventType,
+              deploymentDate: this.deploymentDate,
+              school: this.school,
               startDate: this.startDate,
               endDate: this.endDate,
               startsAt: this.startDate + this.startTime,
@@ -242,5 +263,18 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
 .modal__title, .modal__btn--close { 
   color: #d8d8d8;
 
+}
+
+::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+input[type=date] {
+    color: white;
+}
+
+textarea {
+    color: white;
 }
 </style>

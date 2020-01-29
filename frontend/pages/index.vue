@@ -5,7 +5,7 @@ as well as registering the socket events. -->
   <div class="voltron">
     <div class="tickers">
       <Announcement />
-      <Deployments/>
+      <Deployment/>
       <ZenDesk/>
       <Jira/>
     </div>
@@ -30,7 +30,7 @@ as well as registering the socket events. -->
 // Importing the main panes 
     import Alert from "../components/Alert";
     import MenuButton from "../components/MenuButton";
-    import Deployments from "../components/Deployments";
+    import Deployment from "../components/Deployment";
     import Announcement from "../components/Announcement";
     import Jira from "../components/Jira";
     import ZenDesk from "../components/ZenDesk";
@@ -48,7 +48,7 @@ as well as registering the socket events. -->
             Jira,
             ZenDesk,
             Announcement,
-            Deployments,
+            Deployment,
 
             Alert,
             MenuButton,
@@ -58,7 +58,7 @@ as well as registering the socket events. -->
             loadData: function () {
                 let _this = this;
 
-                ["announcement", "alert", "birthday", "event", "vacation"]
+                ["announcement", "alert", "birthday", "event", "vacation", "deployment"]
                     .forEach(function (api) {
                         _this.$socket.get(`/${api}`,
                             (body, response) => {
@@ -69,7 +69,7 @@ as well as registering the socket events. -->
             registerSocketEvents: function () {
                 let _this = this;
 
-                ["announcement", "alert", "birthday", "event", "vacation"]
+                ["announcement", "alert", "birthday", "event", "vacation", "deployment"]
                     .forEach(function (api) {
                         _this.$socket.on(api, res => {
                             _this.$store.commit(`${api}/${res.verb}`, res.data)

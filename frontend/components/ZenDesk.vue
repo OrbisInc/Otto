@@ -54,7 +54,7 @@ export default {
   methods: {
     zenDeskAPICall: function() {
       let useremail = 'coopthree@orbiscommunications.com'
-      let password = 'tAe1rrWGwsJgboUXjIgH13DA'
+      let password = ''
       let encodedHeader = btoa(useremail + ':' + password)
       var headers = {
         Authorization: "Basic " + password,
