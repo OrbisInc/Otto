@@ -34,6 +34,7 @@ import schedule from 'node-schedule'
 import Vue from 'vue'    
     export default {
         name: "Deployment",
+        props: ['url'],
         updated: function() {
           var that = this;
           window.test = this;
@@ -47,6 +48,7 @@ import Vue from 'vue'
         },
         data: function(){
           return {
+            hostURL: this.url,
             numberOfSlides : 0,
             renderSlider : true,
             dissectedDate: '',
@@ -55,14 +57,10 @@ import Vue from 'vue'
         },
         methods: {
           createFormattedDeploymentArray: function() {
-            console.log("Array entered");
             let intermittentArray = [];
-            intermittentArray = [...this.deployments];
-            console.log(intermittentArray);
+            intermittentArray = JSON.parse(JSON.stringify(this.deployments));
             for (var i = 0; i < intermittentArray.length; i++) {
-              console.log("Deployment Date: " + intermittentArray[i].deploymentDate)
               let splitDate = intermittentArray[i].deploymentDate.split("-");
-              console.log("Split Date: " + splitDate);
               let year = splitDate[0];
               let month = monthNames[splitDate[1].replace('0', '')-1];
               let day = splitDate[2];
@@ -99,7 +97,7 @@ import Vue from 'vue'
               startsAt: this.startDate + this.startTime,
               endsAt: this.endDate + this.endTime
             }
-              fetch('http://127.0.0.1:1337/deployment', {
+              fetch(this.hostURL + 'deployment', {
               method: "DELETE",
               headers: headers,
               body:  JSON.stringify(data)
@@ -149,3 +147,9 @@ import Vue from 'vue'
         }
     }
 </script>
+
+<style scoped>
+.ticker__item, .tns-item {
+  align-content: center;
+}
+</style>

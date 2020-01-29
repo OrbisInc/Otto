@@ -31,6 +31,7 @@ import schedule from 'node-schedule'
 import Vue from 'vue'    
     export default {
         name: "Announcement",
+        props: ['url'],
         updated: function() {
           var that = this;
           window.test = this;
@@ -47,6 +48,7 @@ import Vue from 'vue'
             numberOfSlides : 0,
             renderSlider : true,
             currentAnnouncements: [], 
+            hostURL: this.url,
           };
         },
         methods: {
@@ -78,7 +80,7 @@ import Vue from 'vue'
               startsAt: this.startDate + this.startTime,
               endsAt: this.endDate + this.endTime
             }
-              fetch('http://127.0.0.1:1337/announcement', {
+              fetch(this.hostURL + 'announcement', {
               method: "DELETE",
               headers: headers,
               body:  JSON.stringify(data)

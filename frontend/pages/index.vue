@@ -4,18 +4,18 @@ as well as registering the socket events. -->
 <template>
   <div class="voltron">
     <div class="tickers">
-      <Announcement />
-      <Deployment/>
+      <Announcement :url="this.hostURL"/>
+      <Deployment :url="this.hostURL"/>
       <ZenDesk/>
       <Jira/>
     </div>
     <aside class="ticker__aside">
       <Weather/>
       <Birthday/>
-      <Event/>
-      <Vacation/>
+      <Event :url="this.hostURL"/>
+      <Vacation :url="this.hostURL"/>
     </aside>
-    <MenuButton/>
+    <MenuButton :url="this.hostURL" />
     <Alert/>
   </div>
 </template>
@@ -52,6 +52,11 @@ as well as registering the socket events. -->
 
             Alert,
             MenuButton,
+        },
+        data() {
+          return {
+            hostURL: "http://127.0.0.1:1337/"
+          }
         },
       // Start of methods block
         methods: {

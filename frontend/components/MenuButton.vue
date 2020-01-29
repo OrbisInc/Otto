@@ -107,22 +107,22 @@
       <h6 aria-hidden="true" class="nav--interaction__title margin--b--xl">Actions</h6>
       <div class="nav--interaction__list" aria-controls="otto__actions">
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/alert", "Alert")'>Add Alert</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "alert", "Alert")'>Add Alert</button>
         </div>
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/announcement", "Announcement")'>Add Announcement</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "announcement", "Announcement")'>Add Announcement</button>
         </div>
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/birthday", "Birthday")'>Add Birthday</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "birthday", "Birthday")'>Add Birthday</button>
         </div>
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/event", "Event")'>Add Event</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "event", "Event")'>Add Event</button>
         </div>
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/vacation", "Vacation")'>Add Vacation</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "vacation", "Vacation")'>Add Out of Office</button>
         </div>      
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal("http://127.0.0.1:1337/deployment", "Deployment")'>Add Deployment</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "deployment", "Deployment")'>Add Deployment</button>
         </div>    
       </div>
     </nav>
@@ -138,8 +138,10 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
         components: {
           VueTimepicker
         },
+        props: ['url'],
         data: function(){
             return {
+              hostURL: this.url,
               isOpen: false,
               message: '',
               name: '',
@@ -158,7 +160,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               endTime: '',
               finalEnd: '',
 
-              url: '', 
+              fetchURL: '', 
               buttonText: '', 
               actionType: ''
             };
@@ -191,7 +193,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               endsAt: this.endDate + this.endTime,
               expiresAt: this.expirationDate,
             }
-              fetch(this.url, {
+              fetch(this.fetchURL, {
               method: "POST",
               headers: headers,
               body:  JSON.stringify(data)
@@ -235,7 +237,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
           //   this.isOpen = false;
           // },
           openModal: function(route, actionType) {
-              this.url = route;
+              this.fetchURL = route;
               this.actionType = actionType;
               this.isOpen = true;
           }

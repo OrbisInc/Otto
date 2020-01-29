@@ -8,7 +8,6 @@ set in in the methods below. The current date is displayed in a method below as 
     <p class="weatherData"> Overcast: {{ this.overcast }} </p>
     <p class="weatherData"> Temperature: {{ this.temperature }}°C </p>
     <p class="weatherData"> Feels Like: {{ this.temperatureFeelsLike }}°C </p>
-    <img class="weatherImage" src="/Clouds.png"> 
     <span class="weatherData dateHeader"> {{this.currentDate}} </span>
     </div>
 </template>

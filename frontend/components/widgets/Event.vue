@@ -37,8 +37,10 @@ export default {
     components: {
         EventItem
     },
+    props: ['url'],
     data() {
         return {
+            hostURL: this.url,
             cutOffEventArray: [],
             currentEvents: [],
             upcomingEvents: [],
@@ -122,7 +124,7 @@ export default {
                 startsAt: this.startDate + this.startTime,
                 endsAt: this.endDate + this.endTime
             }
-            fetch('http://127.0.0.1:1337/event', {
+            fetch(this.hostURL + 'event', {
                 method: "DELETE",
                 headers: headers,
                 body: JSON.stringify(data)

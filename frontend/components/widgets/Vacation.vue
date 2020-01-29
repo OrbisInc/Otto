@@ -5,12 +5,12 @@ a series of arrays to display the data in the way we want.
 
 <template>
   <div class="ticker__item in--sidebar padding--a--s noBorder ">
-    Currently on Vacation:
+    Currently Out of Office:
       <div class="vacationItem" v-for="m in this.currentVacationsArray" :key="m.id">
        <span class="greyCircle"> </span> {{m.name}} is back on {{m.endDate}}
       </div>
     <br>
-    Upcoming Vacations:
+    Upcoming Out of Office:
       <div class="vacationItem" v-for="m in this.upcomingVacationsArray" :key="m.id">
         <span class="greyCircle"> </span> {{m.name}} Starts Vacation on: {{m.endDate}}
       </div>
@@ -22,6 +22,7 @@ import schedule from 'node-schedule'
 
     export default {
         name: "Vacations",
+        props: ['url'],
         components: {
         },
         data() {
@@ -29,6 +30,7 @@ import schedule from 'node-schedule'
             cutOffVacationArray: [],
             currentVacationsArray: [],
             upcomingVacationsArray: [],
+            hostURL: this.url,
           }
         },
         methods: {
@@ -119,7 +121,7 @@ import schedule from 'node-schedule'
               startsAt: this.startDate + this.startTime,
               endsAt: this.endDate + this.endTime
             }
-              fetch('http://127.0.0.1:1337/vacation', {
+              fetch(this.hostURL + 'vacation', {
               method: "DELETE",
               headers: headers,
               body:  JSON.stringify(data)
