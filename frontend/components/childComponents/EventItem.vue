@@ -76,17 +76,16 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 .schedule-item {
     height: 5.3em;
 }
-.schedule-item__right {
-    font-size: 1.25em;
-}
 .schedule-item__left {
     background-color: rgb(56, 56, 56);
-    font-size: 1.25em;
 }
 
-.schedule-item__title{
-    color: rgb(56, 56, 56);
-  font-size: 0.8em;
+.schedule-item__title a{
+  color: rgb(56, 56, 56);
+}
+
+.schedule-item__title {
+  font-size: 1.05em;
 }
 .schedule-item__location {
   font-size: 0.7em;
@@ -104,7 +103,6 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background: #b13888;
   color: #ffffff;
   flex-basis: 160px;
   min-width: 0px;

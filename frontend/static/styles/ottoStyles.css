@@ -177,3 +177,15 @@ textarea.ticker__item, input.ticker__item, .vue-ticker__item input {
   .noBorder {
     border-radius: 0px;
   }
+
+  .tns-nav button{
+    width: 3.0em;
+    height: 1.2em;
+    opacity: 0.3;
+    margin-left: 0.3em;
+  }
+
+  .tns-nav-active {
+    opacity: 1.0;
+    background-color: black;
+  }

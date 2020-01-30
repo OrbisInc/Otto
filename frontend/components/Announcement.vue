@@ -11,7 +11,8 @@ The variable 'renderSlider' which is utilized in a v-if is used. It changes to f
         :items="1"
         slide-by="page"
         :controls="false"
-        :nav="false"
+        :nav="true"
+        navPosition="bottom"
         :autoplay-button-output="false"
         :speed="3000"
         :autoplay="true"
@@ -126,3 +127,10 @@ import Vue from 'vue'
         }
     }
 </script>
+
+<style scoped>
+.tns-nav {
+  width: 3.0em;
+  height: 3.0em;
+}
+</style>

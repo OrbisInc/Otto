@@ -97,4 +97,9 @@ aside {
 .ticker__item p{
   font-size: 3.0em;
 }
+
+.tns-nav {
+  width: 3.0em;
+  height: 3.0em;
+}
 </style>

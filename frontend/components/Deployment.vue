@@ -11,7 +11,7 @@ The variable 'renderSlider' which is utilized in a v-if is used. It changes to f
         :items="1"
         slide-by="page"
         :controls="false"
-        :nav="false"
+        :nav="true"
         :autoplay-button-output="false"
         :speed="3000"
         :autoplay="true"

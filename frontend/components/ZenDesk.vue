@@ -56,12 +56,16 @@ export default {
       let useremail = 'coopthree@orbiscommunications.com'
       let password = ''
       let encodedHeader = btoa(useremail + ':' + password)
+      let searchString = "status"
       var headers = {
         Authorization: "Basic " + password,
         "Content-Type": "application/json"
       };
       fetch(
-        "https://xxxxxx.zendesk.com/api/v2/help_center/en-us/articles.json",
+        "https://xxxxxx.zendesk.com//api/v2/tickets.json", 
+        // "https://xxxxx.zendesk.com/api/v2/search.json?query=type:ticket status:open"
+        // created>2016-01-01T11:59:00Z created<2014-08-05T24:00:00Z
+        // updated<2016-01-01
         {
           method: "GET",
           headers: headers
@@ -77,9 +81,25 @@ export default {
           this.All = jsonData;
         });
     },
+    jsonLoop: function() {
+      let unrespond = 0;
+      let unsolved = 0;
+      let passed = 0;
+      let all = 0;
+      for (var i = 0; i < jsonData.length; i++) {
+        if(jsonData[i].status = "open") {
+          unrespond++
+        }
+      }
+    },
+
+    nextPageFetch: function() {
+
+    },
+
     scheduleDate: function() {
       var self = this;
-      schedule.scheduleJob('*/1 * * * *', function(){
+      schedule.scheduleJob('*/15 * * * *', function(){
         console.log("ZenDesk Called.");
         this.zenDeskAPICall();
       });
