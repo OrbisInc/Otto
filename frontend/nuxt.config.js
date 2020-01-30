@@ -53,6 +53,6 @@ export default {
   },
 
   axios : {
-    baseURL: 'http://localhost:1337'
+    baseURL: 'http://192.168.20.56:1337'
   }
 }

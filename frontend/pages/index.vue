@@ -55,7 +55,7 @@ as well as registering the socket events. -->
         },
         data() {
           return {
-            hostURL: "http://127.0.0.1:1337/"
+            hostURL: "http://192.168.20.56:1337/"
           }
         },
       // Start of methods block
@@ -93,5 +93,8 @@ as well as registering the socket events. -->
 <style scoped>
 aside {
   font-weight: bold;
+}
+.ticker__item p{
+  font-size: 3.0em;
 }
 </style>

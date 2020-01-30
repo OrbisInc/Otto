@@ -31070,6 +31070,8 @@ body.is--otto {
 }
 
 .tckr-wrap .tckr__item {
+position: relative;
+top: -80px;
   display: inline-block;
   padding: 0 2rem;
   font-size: 24px;

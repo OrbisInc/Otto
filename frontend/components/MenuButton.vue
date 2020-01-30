@@ -279,4 +279,9 @@ input[type=date] {
 textarea {
     color: white;
 }
+
+#otto__actions {
+    width: 4.5em;
+    height: 4.5em;
+}
 </style>

@@ -174,8 +174,13 @@ export default {
     height: 40.9%;
 }
 
+.noBorder p {
+   font-size: 1.80em;
+}
+
 .eventItems {
     margin: 0;
     padding: 0;
+    font-size: 1.75em;
 }
 </style>

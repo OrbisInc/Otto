@@ -56,6 +56,7 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     padding: 0;
     display: block;
     height: 23%;
+    font-size: 1.75em;
 
 }
 .container {
@@ -72,11 +73,86 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     margin: auto;
 }
 
+.schedule-item {
+    height: 5.3em;
+}
+.schedule-item__right {
+    font-size: 1.25em;
+}
 .schedule-item__left {
     background-color: rgb(56, 56, 56);
+    font-size: 1.25em;
 }
 
-.schedule-item__title a{
+.schedule-item__title{
     color: rgb(56, 56, 56);
+  font-size: 0.8em;
+}
+.schedule-item__location {
+  font-size: 0.7em;
+}
+
+.schedule-item__calendar {
+  font-size: 0.7em;
+}
+
+.schedule-item__time-status {
+  font-size: 0.7em;
+}
+.schedule-item__left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background: #b13888;
+  color: #ffffff;
+  flex-basis: 160px;
+  min-width: 0px;
+  max-width: 160px;
+  width: 80px;
+}
+
+.schedule-item__left .date {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100px;
+}
+
+.schedule-item__left .date .day {
+  font-size: 1.9em;
+  font-weight: bold;
+  flex-basis: 32px;
+  line-height: 82px;
+  text-align: center;
+}
+
+.schedule-item__left .date .month {
+  font-size: 0.7em;
+  font-weight: bold;
+  text-transform: uppercase;
+  flex-basis: 12px;
+  line-height: 12px;
+  text-align: center;
+}
+
+.schedule-item__left .time {
+  font-size: 25px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.33);
+  width: 100%;
+  text-align: center;
+  height: 20px;
+  line-height: 20px;
+}
+
+.schedule-item__left .time {
+  font-size: 25px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.33);
+  width: 100%;
+  text-align: center;
+  height: 30px;
+  line-height: 30px;
 }
 </style>

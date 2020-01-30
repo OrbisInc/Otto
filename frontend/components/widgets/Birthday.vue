@@ -50,7 +50,7 @@
 }
 
 .birthdayItems {
-  font-size: 1.02em;
+  font-size: 1.5em;
   position: relative;
   margin-left: 0.8em;
   margin-bottom: 0px;

@@ -5,12 +5,12 @@ a series of arrays to display the data in the way we want.
 
 <template>
   <div class="ticker__item in--sidebar padding--a--s noBorder ">
-    Currently Out of Office:
+    <p> Currently Out of Office: </p>
       <div class="vacationItem" v-for="m in this.currentVacationsArray" :key="m.id">
        <span class="greyCircle"> </span> {{m.name}} is back on {{m.endDate}}
       </div>
     <br>
-    Upcoming Out of Office:
+    <p> Upcoming Out of Office: </p>
       <div class="vacationItem" v-for="m in this.upcomingVacationsArray" :key="m.id">
         <span class="greyCircle"> </span> {{m.name}} Starts Vacation on: {{m.endDate}}
       </div>
@@ -173,7 +173,7 @@ import schedule from 'node-schedule'
 .vacationItem {
   color: rgb(85, 85, 85);
   position: relative;
-  font-size: 1.0em;
+  font-size: 1.75em;
   height: 10%;
   margin: 0;
   padding: 0;
@@ -185,13 +185,19 @@ import schedule from 'node-schedule'
   position: absolute;
   left: -2.2em;
   background-color: rgb(64, 64, 64);
-  border-radius: 30px;
-  width: 30px;
-  height: 30px;
+  border-radius: 1.5em;
+  width: 1.75em;
+  height: 1.75em;
 }
 .noBorder {
   background-color:rgb(196, 196, 196);
   color: black;
   height: 25%;
 }
+
+
+.noBorder p {
+   font-size: 1.80em;
+}
+
 </style>

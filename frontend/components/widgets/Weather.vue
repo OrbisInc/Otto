@@ -71,12 +71,12 @@ set in in the methods below. The current date is displayed in a method below as 
 .weatherData {
   margin: 0;
   padding: 0;
-  font-size: 0.7em;
+  font-size: 1.3em;
 }
 .containerColor {
   background-color:rgb(102, 102, 102);
   color: white;
-  font-size: 1.4em;
+  font-size: 2.0em;
   position: relative;
 }
 .dateHeader {
@@ -84,7 +84,7 @@ set in in the methods below. The current date is displayed in a method below as 
   color: rgb(184, 184, 184);
   text-align: center;
   height: 20%;
-  font-size: 1.0em;
+  font-size: 1.3em;
   width: 100%;
   position: absolute;
   bottom: 0;
