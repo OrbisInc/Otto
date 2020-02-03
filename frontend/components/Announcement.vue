@@ -6,7 +6,8 @@ The variable 'renderSlider' which is utilized in a v-if is used. It changes to f
 <template>
   <section class="ticker__container" v-if="renderSlider && announcements.length">
     <client-only>
-      <vue-tiny-slider ref="tinySlider"
+      <vue-tiny-slider
+        ref="tinySlider"
         class="list--plain ticker"
         :items="1"
         slide-by="page"
@@ -26,110 +27,114 @@ The variable 'renderSlider' which is utilized in a v-if is used. It changes to f
   </section>
 </template>
 
+<!-- The scripts for the component. This script contains data attributes and methods for this component. -->
 <script>
+import schedule from "node-schedule";
+import Vue from "vue";
+export default {
+  name: "Announcement",
+  props: ["url"],
+  updated: function() {
+    var that = this;
+    window.test = this;
 
-import schedule from 'node-schedule'
-import Vue from 'vue'    
-    export default {
-        name: "Announcement",
-        props: ['url'],
-        updated: function() {
-          var that = this;
-          window.test = this;
-
-          if(!this.renderSlider)
-          {
-            Vue.nextTick(function(){
-              that.renderSlider = true;
-            });
-          }
-        },
-        data : function(){
-          return {
-            numberOfSlides : 0,
-            renderSlider : true,
-            currentAnnouncements: [], 
-            hostURL: this.url,
-          };
-        },
-        methods: {
-          getCurrentDate: function() {
-            return new Date().toJSON().slice(0,10).replace(/-/g,'-');
-          },
-          compareDates: function(date1, date2) {
-            var d1 = Date.parse(date1);
-            var d2 = Date.parse(date2);
-            if (d1 <= d2) {
-              return true
-            } else {
-              return false
-            }
-          },
-          deleteAnnouncement(uniqueID) {
-            var headers = {
-              "Content-Type": "application/json"                         
-            }
-            var data = {
-              message: this.message,
-              name: this.name,
-              id: uniqueID,
-              date: this.startDate,
-              title: this.eventTitle,
-              startDate: this.startDate,
-              endDate: this.endDate,
-              startsAt: this.startDate + this.startTime,
-              endsAt: this.endDate + this.endTime
-            }
-              fetch(this.hostURL + 'announcement', {
-              method: "DELETE",
-              headers: headers,
-              body:  JSON.stringify(data)
-            })
-          },
-          scheduledDatabaseMaintenance: function() {
-            var self = this;
-            schedule.scheduleJob('*/1 * * * *', function(){
-              console.log("Announcements Called.");
-              for(var i = 0; i < self.announcements.length; i++) {
-                if (self.compareDates(self.announcements[i].expiresAt, self.getCurrentDate())) {
-                  console.log("DELETED")
-                  console.log(self.announcements[i].id)
-                  self.deleteAnnouncement(self.announcements[i].id);
-                  self.announcements.splice(i, i);
-                }
-              }
-              });
-          },
-        },
-        mounted() {
-         this.scheduledDatabaseMaintenance();
-        },
-        watch: {
-          numberOfSlides : function(val, oldVal){
-            if(val != oldVal)
-            {
-              this.renderSlider = false;
-            }
-          }
-        },
-        computed: {
-          announcements: {
-            cache: false,
-            get: function() {         
-              this.numberOfSlides = this.$store.state.announcement.all.length;
-              return this.$store
-                  .state
-                  .announcement
-                  .all
-            }
+    if (!this.renderSlider) {
+      Vue.nextTick(function() {
+        that.renderSlider = true;
+      });
+    }
+  },
+  data: function() {
+    return {
+      numberOfSlides: 0,
+      renderSlider: true,
+      currentAnnouncements: [],
+      hostURL: this.url
+    };
+  },
+  methods: {
+    getCurrentDate: function() {
+      return new Date()
+        .toJSON()
+        .slice(0, 10)
+        .replace(/-/g, "-");
+    },
+    compareDates: function(date1, date2) {
+      var d1 = Date.parse(date1);
+      var d2 = Date.parse(date2);
+      if (d1 <= d2) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    deleteAnnouncement(uniqueID) {
+      var headers = {
+        "Content-Type": "application/json"
+      };
+      var data = {
+        message: this.message,
+        name: this.name,
+        id: uniqueID,
+        date: this.startDate,
+        title: this.eventTitle,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        startsAt: this.startDate + this.startTime,
+        endsAt: this.endDate + this.endTime
+      };
+      fetch(this.hostURL + "announcement", {
+        method: "DELETE",
+        headers: headers,
+        body: JSON.stringify(data)
+      });
+    },
+    scheduledDatabaseMaintenance: function() {
+      var self = this;
+      schedule.scheduleJob("*/1 * * * *", function() {
+        console.log("Announcements Called.");
+        for (var i = 0; i < self.announcements.length; i++) {
+          if (
+            self.compareDates(
+              self.announcements[i].expiresAt,
+              self.getCurrentDate()
+            )
+          ) {
+            console.log("DELETED");
+            console.log(self.announcements[i].id);
+            self.deleteAnnouncement(self.announcements[i].id);
+            self.announcements.splice(i, i);
           }
         }
+      });
     }
+  },
+  mounted() {
+    this.scheduledDatabaseMaintenance();
+  },
+  watch: {
+    numberOfSlides: function(val, oldVal) {
+      if (val != oldVal) {
+        this.renderSlider = false;
+      }
+    }
+  },
+  computed: {
+    announcements: {
+      cache: false,
+      get: function() {
+        this.numberOfSlides = this.$store.state.announcement.all.length;
+        return this.$store.state.announcement.all;
+      }
+    }
+  }
+};
 </script>
 
+<!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. --> 
 <style scoped>
 .tns-nav {
-  width: 3.0em;
-  height: 3.0em;
+  width: 3em;
+  height: 3em;
 }
 </style>

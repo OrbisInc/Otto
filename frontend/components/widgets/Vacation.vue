@@ -3,168 +3,189 @@ a database. There are multiple methods used here. Some of the methods are helper
 a series of arrays to display the data in the way we want.
  -->
 
+<!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
 <template>
-  <div class="ticker__item in--sidebar padding--a--s noBorder ">
-    <p> Currently Out of Office: </p>
-      <div class="vacationItem" v-for="m in this.currentVacationsArray" :key="m.id">
-       <span class="greyCircle"> </span> {{m.name}} is back on {{m.endDate}}
-      </div>
-    <br>
-    <p> Upcoming Out of Office: </p>
-      <div class="vacationItem" v-for="m in this.upcomingVacationsArray" :key="m.id">
-        <span class="greyCircle"> </span> {{m.name}} Starts Vacation on: {{m.endDate}}
-      </div>
+  <div class="ticker__item in--sidebar padding--a--s noBorder">
+    <p>Currently Out of Office:</p>
+    <div class="vacationItem" v-for="m in this.currentVacationsArray" :key="m.id">
+      <span class="greyCircle"></span>
+      {{m.name}} is back on {{m.endDate}}
     </div>
+    <br />
+    <p>Upcoming Out of Office:</p>
+    <div class="vacationItem" v-for="m in this.upcomingVacationsArray" :key="m.id">
+      <span class="greyCircle"></span>
+      {{m.name}} Starts Vacation on: {{m.endDate}}
+    </div>
+  </div>
 </template>
 
+<!-- The scripts for the component. This script contains data attributes and methods for this component. -->
 <script>
-import schedule from 'node-schedule'
+import schedule from "node-schedule";
 
-    export default {
-        name: "Vacations",
-        props: ['url'],
-        components: {
-        },
-        data() {
-          return {
-            cutOffVacationArray: [],
-            currentVacationsArray: [],
-            upcomingVacationsArray: [],
-            hostURL: this.url,
-          }
-        },
-        methods: {
-          getCurrentDate: function() {
-            return new Date().toJSON().slice(0,10).replace(/-/g,'-');
-          },
-          getCutOffDate: function() {
-            var futureWindow = 4;
-            var date = new Date();
-            var dd = date.getDate();
-            var mm = '0' + (date.getMonth() + futureWindow);
-            var y = date.getFullYear();
-            var finalDate = y + '-'+ mm + '-'+ dd;
-            return finalDate;
-          },
-          compareDates: function(date1, date2) {
-            var d1 = Date.parse(date1);
-            var d2 = Date.parse(date2);
-            if (d1 <= d2) {
-              return true
-            } else {
-              return false
-            }
-          },
+export default {
+  name: "Vacations",
+  props: ["url"],
+  components: {},
+  data() {
+    return {
+      cutOffVacationArray: [],
+      currentVacationsArray: [],
+      upcomingVacationsArray: [],
+      hostURL: this.url
+    };
+  },
+  methods: {
+    // The next three methods are helper methods used in the array construction methods below.
+    getCurrentDate: function() {
+      return new Date()
+        .toJSON()
+        .slice(0, 10)
+        .replace(/-/g, "-");
+    },
+    getCutOffDate: function() {
+      var futureWindow = 4;
+      var date = new Date();
+      var dd = date.getDate();
+      var mm = "0" + (date.getMonth() + futureWindow);
+      var y = date.getFullYear();
+      var finalDate = y + "-" + mm + "-" + dd;
+      return finalDate;
+    },
+    compareDates: function(date1, date2) {
+      var d1 = Date.parse(date1);
+      var d2 = Date.parse(date2);
+      if (d1 <= d2) {
+        return true;
+      } else {
+        return false;
+      }
+    },
 
-          // This function will duplicate the vacations array - and then filter through the array for elements that only occur within the next three months.
-          // Additionally, it will only populate up to four.
-          createCutOffVacations: function() {
-            let futureDate = this.getCutOffDate();
-            let testArray = [...this.vacations];
-            let sortedArray = testArray.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-            let finalArray = []
-            for(var i = 0; i < testArray.length; i++) {
-              if (this.compareDates(testArray[i].endDate, this.getCurrentDate())) {
-                this.deleteVacation(testArray[i].id);
-              }
-              if(finalArray.length > 4) {
-                break;
-              }
-              if(this.compareDates(testArray[i].startDate, futureDate)) {
-               finalArray.push(testArray[i]);
-              }
-            }
-            return finalArray
-          },
+    // This function will duplicate the vacations array - and then filter through the array for elements that only occur within the next three months.
+    // Additionally, it will fetch up to four vacations before breaking the loop. It then returns that array.
+    createCutOffVacations: function() {
+      let futureDate = this.getCutOffDate();
+      let testArray = [...this.vacations];
+      let sortedArray = testArray.sort(
+        (a, b) => new Date(a.startDate) - new Date(b.startDate)
+      );
+      let cutOffArray = [];
+      for (var i = 0; i < testArray.length; i++) {
+        if (this.compareDates(testArray[i].endDate, this.getCurrentDate())) {
+          this.deleteVacation(testArray[i].id);
+        }
+        if (cutOffArray.length > 4) {
+          break;
+        }
+        if (this.compareDates(testArray[i].startDate, futureDate)) {
+          cutOffArray.push(testArray[i]);
+        }
+      }
+      return cutOffArray;
+    },
 
-          // This function will take in the vacations from the createCutOffVacations method - and then sort it into the current'vacations and 
-          // upcoming vacations by comparing dates. This returns two arrays.
-          splitArrays: function() {
-            let currentVacations = [];
-            let upcomingVacations = [];
-            for(var i = 0; i < this.cutOffVacationArray.length; i++) {
-              if(this.compareDates(this.cutOffVacationArray[i].startDate, this.getCurrentDate())) {
-                currentVacations.push(this.cutOffVacationArray[i]);
-              } else {
-                upcomingVacations.push(this.cutOffVacationArray[i]);
-              }
-            }
-            var currentArray = currentVacations.sort((a, b) => new Date(a.endDate) - new Date(b.endDate))
-            var upcomingArray = upcomingVacations.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-            return [currentArray, upcomingArray]
-          },
+    // This function will take in the vacations from the createCutOffVacations method - and then sort it into the current vacations and
+    // upcoming vacations by comparing dates. This returns two arrays.
+    splitArrays: function() {
+      let currentVacations = [];
+      let upcomingVacations = [];
+      for (var i = 0; i < this.cutOffVacationArray.length; i++) {
+        if (
+          this.compareDates(
+            this.cutOffVacationArray[i].startDate,
+            this.getCurrentDate()
+          )
+        ) {
+          currentVacations.push(this.cutOffVacationArray[i]);
+        } else {
+          upcomingVacations.push(this.cutOffVacationArray[i]);
+        }
+      }
+      var currentArray = currentVacations.sort(
+        (a, b) => new Date(a.endDate) - new Date(b.endDate)
+      );
+      var upcomingArray = upcomingVacations.sort(
+        (a, b) => new Date(a.startDate) - new Date(b.startDate)
+      );
+      return [currentArray, upcomingArray];
+    },
 
-          // This function will call both previous functions to construct the arrays we want to display.
-          createVacationsArray: function() {
-            if (this.vacations.length != 0) {
-              this.cutOffVacationArray = this.createCutOffVacations();
-              if (this.cutOffVacationArray != 0) {
-                var values = this.splitArrays()
-                this.currentVacationsArray = values[0];
-                this.upcomingVacationsArray = values[1];
-              }
-            }
-          },
-          deleteVacation(uniqueID) {
-            var headers = {
-              "Content-Type": "application/json"                         
-            }
-            var data = {
-              message: this.message,
-              name: this.name,
-              id: uniqueID,
-              date: this.startDate,
-              title: this.eventTitle,
-              startDate: this.startDate,
-              endDate: this.endDate,
-              startsAt: this.startDate + this.startTime,
-              endsAt: this.endDate + this.endTime
-            }
-              fetch(this.hostURL + 'vacation', {
-              method: "DELETE",
-              headers: headers,
-              body:  JSON.stringify(data)
-                })
-          },
+    // This function will call both previous functions to construct the arrays we want to display.
+    createVacationsArray: function() {
+      if (this.vacations.length != 0) {
+        this.cutOffVacationArray = this.createCutOffVacations();
+        if (this.cutOffVacationArray != 0) {
+          var values = this.splitArrays();
+          this.currentVacationsArray = values[0];
+          this.upcomingVacationsArray = values[1];
+        }
+      }
+    },
 
-          // The node-scheduler will repeat given the schedule given.
-          scheduledDatabaseMaintenance: function() {
-            var self = this;
-            schedule.scheduleJob('*/1 * * * *', function(){
-              console.log("Vacation Called.")
-              for(var i = 0; i < self.vacations.length; i++) {
-                  if (self.compareDates(self.vacations[i].endDate, self.getCurrentDate())) {
-                    console.log(self.vacations[i].endDate + '<' + self.getCurrentDate())
-                    self.deleteVacation(self.vacations[i].id);
-                    self.vacations.splice(i, i);
-                  }
-                }
-              });
-          },
-        },
-        mounted: function() {
-          this.createVacationsArray();
-          this.scheduledDatabaseMaintenance();
-        },
-        computed: {
-          vacations : {
-            get: function() {     
-              return this.$store
-                  .state
-                  .vacation
-                  .all
-            },
-          }
-        },
-        watch: {
-          vacations() {
-            this.createVacationsArray(); 
-            // this.dbMaintenance();
+    // A function that uses an AJAX fetch to delete something in the database.
+    deleteVacation(uniqueID) {
+      var headers = {
+        "Content-Type": "application/json"
+      };
+      var data = {
+        message: this.message,
+        name: this.name,
+        id: uniqueID,
+        date: this.startDate,
+        title: this.eventTitle,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        startsAt: this.startDate + this.startTime,
+        endsAt: this.endDate + this.endTime
+      };
+      fetch(this.hostURL + "vacation", {
+        method: "DELETE",
+        headers: headers,
+        body: JSON.stringify(data)
+      });
+    },
+
+    // The node-scheduler will repeat given the functions given on the given schedule.
+    scheduledDatabaseMaintenance: function() {
+      var self = this;
+      schedule.scheduleJob("*/1 * * * *", function() {
+        console.log("Vacation Called.");
+        for (var i = 0; i < self.vacations.length; i++) {
+          if (
+            self.compareDates(self.vacations[i].endDate, self.getCurrentDate())
+          ) {
+            console.log(
+              self.vacations[i].endDate + "<" + self.getCurrentDate()
+            );
+            self.deleteVacation(self.vacations[i].id);
+            self.vacations.splice(i, i);
           }
         }
+      });
     }
+  },
+  mounted: function() {
+    this.createVacationsArray();
+    this.scheduledDatabaseMaintenance();
+  },
+  computed: {
+    vacations: {
+      get: function() {
+        return this.$store.state.vacation.all;
+      }
+    }
+  },
+  watch: {
+    vacations() {
+      this.createVacationsArray();
+    }
+  }
+};
 </script>
 
+<!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->
 <style scoped>
 .ticker__item {
   align-content: left;
@@ -189,14 +210,12 @@ import schedule from 'node-schedule'
   height: 1.75em;
 }
 .noBorder {
-  background-color:rgb(196, 196, 196);
+  background-color: rgb(196, 196, 196);
   color: black;
   height: 25%;
 }
 
-
 .noBorder p {
-   font-size: 1.80em;
+  font-size: 1.8em;
 }
-
 </style>
