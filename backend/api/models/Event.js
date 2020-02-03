@@ -15,7 +15,6 @@ module.exports = {
 
   attributes: {
     title: {type: 'string', required: true},
-    type: {type: 'string', required: true},
     startsAt: {
       type: 'ref',
       columnType: 'datetime',

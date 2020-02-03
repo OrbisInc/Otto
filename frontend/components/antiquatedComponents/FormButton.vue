@@ -35,8 +35,6 @@ This form uses a POST Ajax request to try and add data to the database through m
               <div class="display--flex flex--column">
                   <label class="width--100">Title of Event: </label>
                   <textarea v-model="eventTitle" name="message" placeholder="Enter the event title" class="ticker__item width--100" autofocus></textarea>
-                  <label class="width--100">Type of Event: </label>
-                  <textarea v-model="eventType" name="message" placeholder="Enter the event type" class="ticker__item width--100" autofocus></textarea>
                   <label class="width--100">Start Time: </label>
                   <div class="display--flex width--100">
                     <input v-model="startDate" class="ticker__item margin--r--l" type="date" name="bday">
@@ -93,7 +91,6 @@ export default {
       message: '',
       name: '',
       eventTitle: '',
-      eventType: '',
 
       startDate: '',
       startTime: '',
@@ -115,7 +112,6 @@ export default {
           name: this.name,
           date: this.startDate,
           title: this.eventTitle,
-          type: this.eventType,
           startDate: this.startDate,
           endDate: this.endDate,
           startsAt: this.startDate + this.startTime,

@@ -55,7 +55,8 @@ as well as registering the socket events. -->
         },
         data() {
           return {
-            hostURL: "http://192.168.20.56:1337/"
+            hostURL: "http://192.168.20.56:1337/" 
+            // hostURL: "http://localhost:1337/" 
           }
         },
       // Start of methods block

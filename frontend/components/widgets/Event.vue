@@ -118,7 +118,6 @@ export default {
                 id: uniqueID,
                 date: this.startDate,
                 title: this.eventTitle,
-                type: this.eventType,
                 startDate: this.startDate,
                 endDate: this.endDate,
                 startsAt: this.startDate + this.startTime,

@@ -60,8 +60,6 @@
               <div class="display--flex flex--column">
                   <label class="width--100">Title of Event: </label>
                   <textarea required v-model="eventTitle" name="message" placeholder="Enter the event title" class="ticker__item width--100" autofocus></textarea>
-                  <label class="width--100">Type of Event: </label>
-                  <textarea v-model="eventType" name="message" placeholder="Enter the event type" class="ticker__item width--100" autofocus></textarea>
                   <label required class="width--100">Start Time: </label>
                   <div class="display--flex width--100">
                     <input v-model="startDate" class="ticker__item margin--r--l" type="date" name="bday">
@@ -146,7 +144,6 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               message: '',
               name: '',
               eventTitle: '',
-              eventType: '',
 
               school: '',
               deploymentDate: '',
@@ -184,7 +181,6 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               name: this.name,
               date: this.startDate,
               title: this.eventTitle,
-              type: this.eventType,
               deploymentDate: this.deploymentDate,
               school: this.school,
               startDate: this.startDate,
@@ -204,38 +200,6 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
                 });
                 this.isOpen = false;
           },
-          //  deleteRequest() {
-          //   console.log(this.deletionIDs)
-          //   for(var i = 0; i < this.deletionIDs.length; i++) {
-          //     console.log(this.deletionIDs[i]);
-          //     var headers = {
-          //      "Content-Type": "application/json"                         
-          //    }
-          //   var data = {
-          //     message: this.message,
-          //     name: this.name,
-          //     date: this.startDate,
-          //     title: this.eventTitle,
-          //     id: this.deletionIDs[i],
-          //     type: this.eventType,
-          //     startDate: this.startDate,
-          //     endDate: this.endDate,
-          //     startsAt: this.startDate + this.startTime,
-          //     endsAt: this.endDate + this.endTime,
-          //     expiresAt: this.expirationDate,
-          //   }
-          //   fetch(this.url, {
-          //     method: "DELETE",
-          //     headers: headers,
-          //     body:  JSON.stringify(data)
-          //       })
-          //       .then((response) => { 
-          //         return response.json();
-          //         this.announcement = ''
-          //       });
-          //   }
-          //   this.isOpen = false;
-          // },
           openModal: function(route, actionType) {
               this.fetchURL = route;
               this.actionType = actionType;
