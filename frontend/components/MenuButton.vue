@@ -202,7 +202,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               this.name = '',
               this.startDate = '',
               this.eventTitle = '',
-              this.deploymentDate = '',
+              this.deploymentDate = 'TBD',
               this.school = '',
               this.startDate = '',
               this.endDate = '',

@@ -12,7 +12,7 @@ module.exports = {
   attributes: {
     message: {type: 'string', required: true},
     school: {type: 'string', required: true},
-    deploymentDate: {type: 'string', required: true},
+    deploymentDate: {type: 'string'},
     expiresAt: {
       type: 'ref',
       columnType: 'datetime',
