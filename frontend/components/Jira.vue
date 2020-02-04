@@ -332,7 +332,7 @@ export default {
           ticks: [],
           baselineColor: "transparent"
         },
-        colors: ["#d92626", "#8013ec", "#1919e6", "darkgreen"],
+        colors: ["#ac4c38", "#8013ec", "#1919e6", "darkgreen"],
         backgroundColor: "transparent",
 
         vAxis: {
