@@ -89,3 +89,7 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Server Configuration Files
+.nuxt.config.js
+plugins/vue-socket.io.js

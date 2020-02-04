@@ -101,7 +101,7 @@
       <i class="material-icons">add</i>
     </button>
 
-    <nav class="nav--interaction color--bg--grey js--interaction-menu" >
+    <nav class="nav--interaction nav--interaction--modified color--bg--grey js--interaction-menu" >
       <h6 aria-hidden="true" class="nav--interaction__title margin--b--xl">Actions</h6>
       <div class="nav--interaction__list" aria-controls="otto__actions">
         <div class="nav--interaction__item">
@@ -114,14 +114,14 @@
           <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "birthday", "Birthday")'>Add Birthday</button>
         </div>
         <div class="nav--interaction__item">
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "deployment", "Deployment")'>Add Deployment</button>
+        </div> 
+        <div class="nav--interaction__item">
           <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "event", "Event")'>Add Event</button>
         </div>
         <div class="nav--interaction__item">
           <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "vacation", "Vacation")'>Add Out of Office</button>
-        </div>      
-        <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "deployment", "Deployment")'>Add Deployment</button>
-        </div>    
+        </div>         
       </div>
     </nav>
   </div>
@@ -146,7 +146,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               eventTitle: '',
 
               school: '',
-              deploymentDate: '',
+              deploymentDate: 'TBD',
               expirationDate: '',
 
               startDate: '',
@@ -198,7 +198,18 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
                   return response.json();
                   this.announcement = ''
                 });
-                this.isOpen = false;
+              this.message = '',
+              this.name = '',
+              this.startDate = '',
+              this.eventTitle = '',
+              this.deploymentDate = '',
+              this.school = '',
+              this.startDate = '',
+              this.endDate = '',
+              this.startDate + this.startTime,
+              this.endDate + this.endTime,
+              this.expirationDate = '',
+              this.isOpen = false;
           },
           openModal: function(route, actionType) {
               this.fetchURL = route;
@@ -247,5 +258,34 @@ textarea {
 #otto__actions {
     width: 4.5em;
     height: 4.5em;
+}
+
+.nav--interaction {
+  width: 15.0em;
+  height: 15.0em;
+  max-width: 15.0em;
+
+}
+.nav--interaction__button {
+  font-size: 1.7em;
+  margin-top: 0.7em;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.nav--interaction__button:hover {
+  background-color: rgb(73, 64, 64);
+}
+
+.nav--interaction--modified {
+  height: 30.0em !important;
+  width: 30.0em !important;
+  max-width: 300em;
+}
+
+.nav--interaction__title {
+  font-size: 2.0em;
+  margin-bottom: 2.0em;
 }
 </style>

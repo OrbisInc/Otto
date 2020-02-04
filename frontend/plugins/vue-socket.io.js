@@ -9,6 +9,7 @@ const io = sailsio(socketio);
 io.sails.reconnection = true;
 
 io.sails.url = 'http://192.168.20.56:1337'; // or process.env.BASE_URL
+ // "http://localhost:1337/" 
 // Remember this must match te same array in config/sockets.js (server config)
 io.sails.transports = ['websocket'];
 

@@ -60,11 +60,13 @@ import Vue from 'vue'
             let intermittentArray = [];
             intermittentArray = JSON.parse(JSON.stringify(this.deployments));
             for (var i = 0; i < intermittentArray.length; i++) {
-              let splitDate = intermittentArray[i].deploymentDate.split("-");
-              let year = splitDate[0];
-              let month = monthNames[splitDate[1].replace('0', '')-1];
-              let day = splitDate[2];
-              intermittentArray[i].deploymentDate = month + " " + day + " " + year;
+              if (intermittentArray[i].deploymentDate != "TBD") {
+                let splitDate = intermittentArray[i].deploymentDate.split("-");
+                let year = splitDate[0];
+                let month = monthNames[splitDate[1].replace('0', '')-1];
+                let day = splitDate[2];
+                intermittentArray[i].deploymentDate = month + " " + day + " " + year;
+              }
             }
             return intermittentArray
           },

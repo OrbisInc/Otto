@@ -54,5 +54,6 @@ export default {
 
   axios : {
     baseURL: 'http://192.168.20.56:1337'
+            //"http://localhost:1337/" 
   }
 }

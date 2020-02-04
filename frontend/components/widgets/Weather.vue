@@ -37,8 +37,15 @@ export default {
         day: "numeric"
       };
       var today = new Date();
-
-      return today.toLocaleDateString("en-US", options);
+      var hours = today.getHours();
+      var minutes = today.getMinutes();
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+ minutes : minutes;
+      var strTime = hours + ':' + minutes + ' ' + ampm;
+      var dateTime = today.toLocaleDateString("en-US", options) + ' ' + strTime
+      return dateTime
     },
     weatherAPICall: function() {
       fetch(
@@ -65,6 +72,11 @@ export default {
       schedule.scheduleJob("*/1 * * * *", function() {
         console.log("Weather Called.");
         self.weatherAPICall();
+      });
+    },
+    scheduleTimeUpdate: function() {
+      var self = this;
+      schedule.scheduleJob("*/1 * * * * *", function() {
         self.currentDate = self.getDate();
       });
     }
@@ -74,6 +86,7 @@ export default {
     this.weatherAPICall();
     this.currentDate = this.getDate();
     this.scheduledWeatherAPICall();
+    this.scheduleTimeUpdate()
   }
 };
 </script>
