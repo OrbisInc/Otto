@@ -8,7 +8,6 @@
           <div class="modal__inner">
             <button type="button" class="modal__btn--close js--close--modal" @click="isOpen = false;"><i class="material-icons">close</i></button>
             <h3 class="modal__title">Add an {{ this.actionType }}</h3>
-            <p>{{ this.actionType }}:</p>
 <!-- 
             <template v-if="this.actionType == 'dAnnouncement'">
                   <p> Select an announcement to delete: </p>
@@ -18,6 +17,7 @@
             </template> -->
 
             <template v-if="this.actionType == 'Announcement' || this.actionType == 'Alert' ">
+              <label class="width--100"> Add an{{this.actionType}} </label>
                 <div class="display--flex flex--column">
                   <textarea required v-model="message" name="message" placeholder="Enter your message" class="ticker__item width--100" autofocus></textarea>
                 </div>
@@ -287,5 +287,18 @@ textarea {
 .nav--interaction__title {
   font-size: 2.0em;
   margin-bottom: 2.0em;
+}
+
+.modal__inner {
+  font-size: 1.5em;
+}
+
+.modal__title {
+  font-size: 1.6em;
+  margin-top: 0.5em;
+}
+
+.btn__default--text {
+  font-size: 1.0em;
 }
 </style>
