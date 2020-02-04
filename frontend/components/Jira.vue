@@ -1,360 +1,360 @@
 <!-- The component for the Jira pane (bottom-right). This pane displays information about Jira to users.
+      
+      This Vue JS component is called in index.vue. It uses the Jira API to find the total number of issues in the current sprint, displayed for each team. A stacked bar graph (from Google Charts - called in app.html) for each team is displayed by Issue Status - Open, In Progress, In Review, and Closed. The data is updated dynamically according to the scheduling program (node-schedule), and was initially set to refresh once a minute.
+
 -->
 
-<template>
+<template>    <!--  the Vue template determines what actually gets written to the DOM. -->
   <section class="ticker__container">
     <ul class="list--plain ticker" id="ticker04">
       <li class="ticker__item">
-        <!-- Team Sprint Details -->
+        <!-- Team Sprint Details text to be displyed directly to the screen could go here, for example--> 
         <div id="jiraData"></div>
-
-        <!-- <h1>{{results}}</h1> -->
+        <!-- the Stacked Bar Chart will be written in this div -->
       </li>
     </ul>
   </section>
 </template>
 
 <script>
-import schedule from "node-schedule";
+  import schedule from "node-schedule";     //this imported module permits scheduled updates
 
-export default {
-  name: "Jira",
-  data() {
-    return {
-      //results: [],
+  export default {                          // this Vue component is made available to index.vue through the export command
+    name: "Jira",                           // the name of the Vue "component"
+    data() {                                // the variable to be used in this file are declared
+      return {
 
-      outcomeOpenIssues: 0,
-      outcomeInProgressIssues: 0,
-      outcomeInReviewIssues: 0,
-      outcomeClosedIssues: 0,
+        outcomeOpenIssues: 0,               // initialized to hold the number of open issues in the Outcome Team's current Sprint
+        outcomeInProgressIssues: 0,         // ... and their issues that are "In Progress" ..
+        outcomeInReviewIssues: 0,           // ... the Outcome Team's issues that have the status "In Review"
+        outcomeClosedIssues: 0,             // ... and those that have the Status "Closed"
 
-      campusConnectOpenIssues: 0,
-      campusConnectInProgressIssues: 0,
-      campusConnectInReviewIssues: 0,
-      campusConnectClosedIssues: 0,
+        campusConnectOpenIssues: 0,         // likewise 4 variables tracking the Status of the Issues for the Campus Connect Team
+        campusConnectInProgressIssues: 0,
+        campusConnectInReviewIssues: 0,
+        campusConnectClosedIssues: 0,
 
-      spiralRobotOpenIssues: 0,
-      spiralRobotInProgressIssues: 0,
-      spiralRobotInReviewIssues: 0,
-      spiralRobotClosedIssues: 0
-    };
-  },
-  methods: {
-    scheduleJiraFetch: function() {
-      var self = this;
-      schedule.scheduleJob("*/1 * * * *", function() {
-        console.log("fetching ... ");
-        self.jiraFetch();
-      });
+        spiralRobotOpenIssues: 0,           // ... and the same for the Spiral Robot Team
+        spiralRobotInProgressIssues: 0,
+        spiralRobotInReviewIssues: 0,
+        spiralRobotClosedIssues: 0
+      };
+    },
+    methods: {                              // the methods to be used by the Vue Component Jira.vue
+      scheduleJiraFetch: function() {       // this function schedules the use of jiraFetch
+        var self = this;
+        schedule.scheduleJob("*/1 * * * *", function() {    // scheduling a "refresh" each minute
+          console.log("fetching ... ");
+          self.jiraFetch();                 // and actually running the fetch and chart draw calls 
+        });
+      },
+      
+      // jiraFetch a method that fetches the number of Issues in each category for each of the three teams,
+      // and then calls the method that actually draws the chart
+
+      jiraFetch: function() {
+        let jira = this;                                        // a variable to clarify the use of the keyowrd "this"
+        let useremail = "coopthree@orbiscommunications.com";    // a login to sign in to Jira
+        let api_token = "tAe1rrWGwsJgboUXjIgH13DA";             // ... and a token to Authenticate that user.
+        let encodedHeader = btoa(useremail + ":" + api_token);  // the process for Basic Authentication, found at: 
+        var headers = {                                         // https://developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/
+          Authorization: "Basic " + encodedHeader,
+          "Content-Type": "application/json"
+        };
+
+        // next fetch the Outcome Team's Issues for the current Sprint, by Status. First, their Open Issues: ie. Issues where the Status is coded as "Needs Scoping", "On Hold", "Open", or "Reopened." First, fetching from the URL that the Jira API makes avalable for this purpose:
+
+        fetch(
+          "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20in%20(%22Needs%20Scoping%22%2C%20%22On%20Hold%22%2C%20Open%2C%20Reopened)%20AND%20Sprint%20in%20openSprints()",
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();               // ... then returning the fetched JSON object from Jira ...
+          })
+          .then(jsonData => {
+            this.outcomeOpenIssues = jsonData.total;    // ... and extracting the Total number of Issues of this type, storing it in outcomeOpenIssues
+          });
+
+        // Next fetch the Outcome Team's In Progress Issues for the current Sprint, by Status, similar to the Open Issues above, storing it in outcomeInProgressIssues.
+
+        fetch(
+          'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20%3D%20"In%20Progress"%20AND%20Sprint%20in%20openSprints()',
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.outcomeInProgressIssues = jsonData.total;
+          });
+
+        // Next fetch the Outcome Team's In Review Issues for the current Sprint, by Status, similar to the Open Issues above, storing it in outcomeInReviewIssues.
+
+        fetch(
+          'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20%3D%20"In%20Review"%20AND%20Sprint%20in%20openSprints()',
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.outcomeInReviewIssues = jsonData.total;
+          });
+
+        // Finally for the Outcome Team, fetch their Closed Issues for the current Sprint, by Status, similar to the Open Issues above, storing it in outcomeClosedIssues. NOTE: Closed Issues also includes those that are Resolved.
+        fetch(
+          "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20in%20(Closed%2C%20Resolved)%20AND%20Sprint%20in%20openSprints()",
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.outcomeClosedIssues = jsonData.total;
+          });
+
+        // Fetch the Campus Connect Team's Issues Statuses, as with the Outcome Team above.
+
+        fetch(
+          'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20CC%20AND%20status%20in%20("Needs%20Scoping"%2C%20"On%20Hold"%2C%20Open%2C%20Reopened)%20AND%20Sprint%20in%20openSprints()',
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.campusConnectOpenIssues = jsonData.total;
+          });
+
+        // Fetch the Campus Connect Team's In Progress Issues
+
+        fetch(
+          'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20CC%20AND%20status%20%3D%20"In%20Progress"%20AND%20Sprint%20in%20openSprints()',
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.campusConnectInProgressIssues = jsonData.total;
+          });
+
+        // Fetch the Campus Connect Team's In Review Issues
+
+        fetch(
+          'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20CC%20AND%20status%20%3D%20"In%20Review"%20AND%20Sprint%20in%20openSprints()',
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.campusConnectInReviewIssues = jsonData.total;
+          });
+
+        // Fetch the Campus Connect Team's In Review Issues
+
+        fetch(
+          "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20CC%20AND%20status%20in%20(Closed%2C%20Resolved)%20AND%20Sprint%20in%20openSprints()",
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            console.log("Test1");
+            this.campusConnectClosedIssues = jsonData.total;
+          });
+
+        // Fetch the Spiral Team's Open Issues
+
+        fetch(
+          'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20in%20("Needs%20Scoping"%2C%20"On%20Hold"%2C%20Open%2C%20Reopened)%20AND%20Sprint%20in%20openSprints()',
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.spiralRobotOpenIssues = jsonData.total;
+          });
+
+        // Fetch the Spiral Team's In Progress Issues
+
+        fetch(
+          'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20%3D%20"In%20Progress"%20AND%20Sprint%20in%20openSprints()',
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.spiralRobotInProgressIssues = jsonData.total;
+          });
+
+        // Fetch the Spiral Team's In Review Issues
+
+        fetch(
+          'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20%3D%20"In%20Review"%20AND%20Sprint%20in%20openSprints()',
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.spiralRobotInReviewIssues = jsonData.total;
+          });
+
+        // Fetch the Spiral Team's Closed Issues
+
+        fetch(
+          "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20in%20(Closed%2C%20Resolved)%20AND%20Sprint%20in%20openSprints()",
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            this.spiralRobotClosedIssues = jsonData.total;
+
+
+          // After gathering all the necessary data, load it into the Google Chart module, with sufficient delay so that the data can be loaded before the 3 Stacked Bar Charts are drawn. The setTimeout function ensures this.
+
+            setTimeout(function() {
+              google.charts.load("current", { packages: ["corechart", "bar"] }); // the chart data is loaded
+              google.charts.setOnLoadCallback(jira.drawChart);                    // the drawChart function will be called ...
+            }, 3000);       // after a 3000 millisecond delay.
+          });
+      },
+
+  // the Google Stacked Bar Chart package receives arrays of data in a predetermined structure, stored in several arrays that it imports into a data table. For further reference see: https://developers.google.com/chart/interactive/docs/gallery/barchart. 
+
+      drawChart: function() {                               // this function builds the data table dynamically
+        var data = google.visualization.arrayToDataTable([    
+          [
+            "Status",                             // the Title of the Legend
+            "Open / To do",                       // the first legend item's color swatch
+            { role: "annotation" },               // the first legend item's text annotation
+            "In progress",                        // ... and so on for each item in the legend 
+            { role: "annotation" },
+            "In review",
+            { role: "annotation" },
+            "Resolved / Closed",
+            { role: "annotation" }
+          ],
+
+          [
+            "Outcome",                            // data for the first Stacked Bar of the Chart
+            this.outcomeOpenIssues,               // the value fetched for the number of Open Issues for the Outcome Team is represented by a colored block in the graph 
+            this.outcomeOpenIssues,               // that same value, duplicated here, is used to literally display the number corresponding that color block on the screen.
+            this.outcomeInProgressIssues,         // ... and soon for Status of each Issue type for the Outcome Team in this Sprint
+            this.outcomeInProgressIssues,
+            this.outcomeInReviewIssues,
+            this.outcomeInReviewIssues,
+            this.outcomeClosedIssues,
+            this.outcomeClosedIssues
+          ],
+
+          [
+            "Campus Connect",
+            this.campusConnectOpenIssues,         // similarly, the fetched data for the Campus Connect team's Opn issues is used to draw a color block for that Team's Stacked bar ...
+            this.campusConnectOpenIssues,         // ... and the text to go along with that color block.
+            this.campusConnectInProgressIssues,   // ... for each Issue Status for the Campus Connect Team
+            this.campusConnectInProgressIssues,
+            this.campusConnectInReviewIssues,
+            this.campusConnectInReviewIssues,
+            this.campusConnectClosedIssues,
+            this.campusConnectClosedIssues
+          ],
+
+          [
+            "Spiral Robot",
+            this.spiralRobotOpenIssues,           // the data array fetched for the Stacked Bar for the Spiral Robot Team is similarly stored.
+            this.spiralRobotOpenIssues,
+            this.spiralRobotInProgressIssues,
+            this.spiralRobotInProgressIssues,
+            this.spiralRobotInReviewIssues,
+            this.spiralRobotInReviewIssues,
+            this.spiralRobotClosedIssues,
+            this.spiralRobotClosedIssues
+          ]
+        ]);
+
+        var options_fullStacked = {               // this option sets the type of Chart to be drawn, in this case a Stacked Bar Chart.
+          isStacked: "percent",                   // ... a "percent" chart spreads the dat over the full length of the available axis.
+          title: "	Jira tracking snapshot",      // The Title of the Chart.
+          titlePosition: "top",                   // The Title is positioned at the top of the Chart area.
+          titleTextStyle: {
+            alignment: "center",                  // the Title's position in the area
+            color: "white",                       // ... and its color
+            fontSize: 35,	                        // ... and the size of the text.
+          },
+          legend: {                               // the Legend explains the way the data is corellated with the color acheme
+            position: "bottom",                   // ... that it is positioned at the bottom of the chart area.
+            alignment: "center",                  // ... it's alignment with respect to the chart
+            maxLines: 2,                          // ... that only 2 lines of the legend wil be displayed at a time
+            textStyle: { color: "white", fontSize: 16 } 
+                                                  // ... and the characteristice of teh Legend's text
+          },
+          hAxis: {                                // characteristics of the horizontal axis of the chart
+            ticks: [],                            // no descriptive ticks will be along the Chart's bars.
+            baselineColor: "transparent"          // the default ticks, where called, will not be visible
+          },
+          colors: ["#ac4c38", "#8013ec", "#1919e6", "darkgreen"], // these are the colours of the actual Stacked Basd in the Chart
+          backgroundColor: "transparent",         // the background color of the chart iwll also be invisible
+
+          vAxis: {                                // the characteristics of the vertical axis of the chart
+            textStyle: { color: "white", fontSize: 30 } // these text fields name the Teams
+          },
+          height: "100%",                         // the Stacked Bars fill up as much of the available space as possible, vertically ...
+          width: "100%"                           // ... and horizontally
+        };
+        var chart = new google.visualization.BarChart(  // this variable of the Chart script determines where it will be written ...
+          document.getElementById("jiraData")           // .. that is, in the div "jiraData"
+        );
+        chart.draw(data, options_fullStacked);          // the chart is drawn
+      }
     },
 
-    jiraFetch: function() {
-      let jira = this;
-      let useremail = "coopthree@orbiscommunications.com";
-      let api_token = "tAe1rrWGwsJgboUXjIgH13DA";
-      let encodedHeader = btoa(useremail + ":" + api_token);
-      var headers = {
-        Authorization: "Basic " + encodedHeader,
-        "Content-Type": "application/json"
-      };
-
-      // fetch the outcome open issues
-
-      fetch(
-        "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20in%20(%22Needs%20Scoping%22%2C%20%22On%20Hold%22%2C%20Open%2C%20Reopened)%20AND%20Sprint%20in%20openSprints()",
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.outcomeOpenIssues = jsonData.total;
-
-          console.log("outcome open issues: " + jsonData.total);
-        });
-
-      // fetch the outcome in progress issues
-
-      fetch(
-        'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20%3D%20"In%20Progress"%20AND%20Sprint%20in%20openSprints()',
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.outcomeInProgressIssues = jsonData.total;
-        });
-
-      // fetch the outcome in review issues
-
-      fetch(
-        'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20%3D%20"In%20Review"%20AND%20Sprint%20in%20openSprints()',
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.outcomeInReviewIssues = jsonData.total;
-        });
-
-      // fetch the outcome closed issues
-
-      fetch(
-        "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20in%20(Closed%2C%20Resolved)%20AND%20Sprint%20in%20openSprints()",
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.outcomeClosedIssues = jsonData.total;
-        });
-
-      // fetch the campus connect open issues
-
-      fetch(
-        'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20CC%20AND%20status%20in%20("Needs%20Scoping"%2C%20"On%20Hold"%2C%20Open%2C%20Reopened)%20AND%20Sprint%20in%20openSprints()',
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.campusConnectOpenIssues = jsonData.total;
-        });
-
-      // fetch the campus connect in progress issues
-
-      fetch(
-        'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20CC%20AND%20status%20%3D%20"In%20Progress"%20AND%20Sprint%20in%20openSprints()',
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.campusConnectInProgressIssues = jsonData.total;
-        });
-
-      // fetch the campus connect in review issues
-
-      fetch(
-        'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20CC%20AND%20status%20%3D%20"In%20Review"%20AND%20Sprint%20in%20openSprints()',
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.campusConnectInReviewIssues = jsonData.total;
-        });
-
-      // fetch the campus connect closed issues
-
-      fetch(
-        "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20CC%20AND%20status%20in%20(Closed%2C%20Resolved)%20AND%20Sprint%20in%20openSprints()",
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          console.log("Test1");
-          this.campusConnectClosedIssues = jsonData.total;
-        });
-
-      // fetch the spiral robot open issues
-
-      fetch(
-        'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20in%20("Needs%20Scoping"%2C%20"On%20Hold"%2C%20Open%2C%20Reopened)%20AND%20Sprint%20in%20openSprints()',
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.spiralRobotOpenIssues = jsonData.total;
-        });
-
-      // fetch the spiral robot in progress issues
-
-      fetch(
-        'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20%3D%20"In%20Progress"%20AND%20Sprint%20in%20openSprints()',
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.spiralRobotInProgressIssues = jsonData.total;
-        });
-
-      // fetch the spiral robot in review issues
-
-      fetch(
-        'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20%3D%20"In%20Review"%20AND%20Sprint%20in%20openSprints()',
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.spiralRobotInReviewIssues = jsonData.total;
-        });
-
-      // fetch the spiral robot closed issues
-
-      fetch(
-        "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20in%20(Closed%2C%20Resolved)%20AND%20Sprint%20in%20openSprints()",
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.spiralRobotClosedIssues = jsonData.total;
-
-          setTimeout(function() {
-            console.log("Test2");
-            google.charts.load("current", { packages: ["corechart", "bar"] });
-            google.charts.setOnLoadCallback(jira.drawChart);
-          }, 3000);
-        });
-    },
-    drawChart: function() {
-      var data = google.visualization.arrayToDataTable([
-        [
-          "Status",
-          "Open / To do",
-          { role: "annotation" },
-          "In progress",
-          { role: "annotation" },
-          "In review",
-          { role: "annotation" },
-          "Resolved / Closed",
-          { role: "annotation" }
-        ],
-
-        [
-          "Outcome",
-          this.outcomeOpenIssues,
-          this.outcomeOpenIssues,
-          this.outcomeInProgressIssues,
-          this.outcomeInProgressIssues,
-          this.outcomeInReviewIssues,
-          this.outcomeInReviewIssues,
-          this.outcomeClosedIssues,
-          this.outcomeClosedIssues
-        ],
-
-        [
-          "Campus Connect",
-          this.campusConnectOpenIssues,
-          this.campusConnectOpenIssues,
-          this.campusConnectInProgressIssues,
-          this.campusConnectInProgressIssues,
-          this.campusConnectInReviewIssues,
-          this.campusConnectInReviewIssues,
-          this.campusConnectClosedIssues,
-          this.campusConnectClosedIssues
-        ],
-
-        [
-          "Spiral Robot",
-          this.spiralRobotOpenIssues,
-          this.spiralRobotOpenIssues,
-          this.spiralRobotInProgressIssues,
-          this.spiralRobotInProgressIssues,
-          this.spiralRobotInReviewIssues,
-          this.spiralRobotInReviewIssues,
-          this.spiralRobotClosedIssues,
-          this.spiralRobotClosedIssues
-        ]
-      ]);
-
-      var options_fullStacked = {
-        isStacked: "percent",
-		title: "	Jira tracking snapshot",
-		
-        titlePosition: "top",
-        titleTextStyle: {
-			          alignment: "center",
-
-          color: "white",
-		  fontSize: 35,
-		  
-        },
-        legend: {
-          position: "bottom",
-          alignment: "center",
-          maxLines: 2,
-          textStyle: { color: "white", fontSize: 16 }
-        },
-        hAxis: {
-          ticks: [],
-          baselineColor: "transparent"
-        },
-        colors: ["#ac4c38", "#8013ec", "#1919e6", "darkgreen"],
-        backgroundColor: "transparent",
-
-        vAxis: {
-          textStyle: { color: "white", fontSize: 30 }
-        },
-        height: "100%",
-        width: "100%"
-      };
-      var chart = new google.visualization.BarChart(
-        document.getElementById("jiraData")
-      );
-      chart.draw(data, options_fullStacked);
+    mounted() {                                   // this Vue life cycle method contains methods so that they will be only implemented after the other code is mounted
+      this.scheduleJiraFetch();                   // the time scheduling method commences after mounting ...
+      this.jiraFetch();                           // as does the method to fetch data and draw the Chart.
     }
-  },
-
-  mounted() {
-    this.scheduleJiraFetch();
-    this.jiraFetch();
-  }
-};
+  };
 </script>
-
-<style scoped>
-</style>
-
