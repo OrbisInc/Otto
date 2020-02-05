@@ -14,6 +14,7 @@ a series of arrays to display the data in the way that we want.
           :title="m.title"
           :startTime="m.startsAt"
           :endTime="m.endsAt"
+          :eventLocation="m.location"
         />
       </span>
     </span>
@@ -25,6 +26,7 @@ a series of arrays to display the data in the way that we want.
         :title="m.title"
         :startTime="m.startsAt"
         :endTime="m.endsAt"
+        :eventLocation="m.location"
       />
     </span>
   </div>

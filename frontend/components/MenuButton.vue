@@ -60,6 +60,8 @@
               <div class="display--flex flex--column">
                   <label class="width--100">Title of Event: </label>
                   <textarea required v-model="eventTitle" name="message" placeholder="Enter the event title" class="ticker__item width--100" autofocus></textarea>
+                   <label class="width--100">Location of Event: </label>
+                  <textarea required v-model="eventLocation" name="message" placeholder="Enter the event location" class="ticker__item width--100" autofocus></textarea>
                   <label required class="width--100">Start Time: </label>
                   <div class="display--flex width--100">
                     <input v-model="startDate" class="ticker__item margin--r--l" type="date" name="bday">
@@ -144,6 +146,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               message: '',
               name: '',
               eventTitle: '',
+              eventLocation: '',
 
               school: '',
               deploymentDate: 'TBD',
@@ -182,12 +185,14 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               date: this.startDate,
               title: this.eventTitle,
               deploymentDate: this.deploymentDate,
+              location: this.eventLocation,
               school: this.school,
               startDate: this.startDate,
               endDate: this.endDate,
               startsAt: this.startDate + this.startTime,
               endsAt: this.endDate + this.endTime,
               expiresAt: this.expirationDate,
+              
             }
               fetch(this.fetchURL, {
               method: "POST",
