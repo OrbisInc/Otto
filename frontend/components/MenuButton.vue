@@ -38,7 +38,7 @@
                   <div class="display--flex width--100">
                     <input required v-model="deploymentDate" class="ticker__item margin--r--l" type="date" name="bday">
                   </div>
-                  <label class="width--100"> Expires On: </label>
+                  <label class="width--100">Expires On: </label>
                   <div class="display--flex width--100">
                     <input required v-model="expirationDate" name="expirationDate" class="ticker__item margin--r--l" type="date">
                   </div>

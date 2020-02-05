@@ -15,7 +15,7 @@ a series of arrays to display the data in the way we want.
     <p>Upcoming Out of Office:</p>
     <div class="vacationItem" v-for="m in this.upcomingVacationsArray" :key="m.id">
       <span class="greyCircle"></span>
-      {{m.name}} Starts Vacation on: {{m.endDate}}
+      {{m.name}} Starts Vacation on: {{m.startDate}}
     </div>
   </div>
 </template>
@@ -23,6 +23,10 @@ a series of arrays to display the data in the way we want.
 <!-- The scripts for the component. This script contains data attributes and methods for this component. -->
 <script>
 import schedule from "node-schedule";
+
+const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
 
 export default {
   name: "Vacations",
@@ -67,7 +71,7 @@ export default {
     // Additionally, it will fetch up to four vacations before breaking the loop. It then returns that array.
     createCutOffVacations: function() {
       let futureDate = this.getCutOffDate();
-      let testArray = [...this.vacations];
+      let testArray = JSON.parse(JSON.stringify(this.vacations));
       let sortedArray = testArray.sort(
         (a, b) => new Date(a.startDate) - new Date(b.startDate)
       );
@@ -83,6 +87,21 @@ export default {
           cutOffArray.push(testArray[i]);
         }
       }
+      for (var i = 0; i < cutOffArray.length; i++) {
+          let splitDate = cutOffArray[i].startDate.split("-");
+          let year = splitDate[0];
+          let month = monthNames[splitDate[1].replace('0', '')-1];
+          let day = splitDate[2];
+          cutOffArray[i].startDate = month + " " + day + " " + year;
+      }
+      for (var i = 0; i < cutOffArray.length; i++) {
+          let splitDate = cutOffArray[i].endDate.split("-");
+          let year = splitDate[0];
+          let month = monthNames[splitDate[1].replace('0', '')-1];
+          let day = splitDate[2];
+          cutOffArray[i].endDate = month + " " + day + " " + year;
+      }
+      console.log(cutOffArray);
       return cutOffArray;
     },
 
