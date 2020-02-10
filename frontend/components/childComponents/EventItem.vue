@@ -17,7 +17,7 @@
         <h5 class="schedule-item__title">
           <a href attrs>{{ this.title }}</a>
         </h5>
-        <span class="schedule-item__location">Hamilton, ON</span>
+        <span class="schedule-item__location">{{this.location}}</span>
         <span class="schedule-item__time-status">From {{ this.startHour }} - {{ this.endHour }}</span>
       </div>
     </div>
@@ -43,13 +43,14 @@ const monthNames = [
 
 export default {
   name: "EventItem",
-  props: ["title", "startTime", "endTime"],
+  props: ["title", "startTime", "endTime", "eventLocation"],
   data() {
     return {
       day: "23",
       month: "Nov",
       startHour: "3:00PM",
-      endHour: "4:30PM"
+      endHour: "4:30PM",
+      location: this.eventLocation
     };
   },
   methods: {

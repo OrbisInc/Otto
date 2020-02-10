@@ -5,16 +5,11 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
-const EventType = {
-  Birthday: 'Birthday',
-  Social: 'Social',
-  Deployment: 'Deployment'
-};
-
 module.exports = {
 
   attributes: {
     title: {type: 'string', required: true},
+    location: {type: 'string', required: true},
     startsAt: {
       type: 'ref',
       columnType: 'datetime',
