@@ -9,7 +9,8 @@ This pane is used to display information about ZenDesk to the users.
       <ul class="list--plain is--quad ticker" id="ticker03">
         <li class="ticker__item is--quad">
           <div>
-            <span>Unresponded To</span>
+            <button type="button" class="modal__btn--close js--close--modal" @click="oAuthorizatonCodeGet"><i class="material-icons">ZenDesk Call</i></button>
+            <span>All Unresponded</span>
             <span>{{Unresponded}}</span>
           </div>
         </li>
@@ -44,69 +45,126 @@ export default {
   name: "ZenDesk",
   data() {
     return {
-      zenDeskJson: "5",
-      Unresponded: "55",
-      Unsolved: "555",
-      PassedSLA: "53",
-      All: "5355"
+      Unresponded: "",
+      Unsolved: "",
+      PassedSLA: "",
+      All: ""
     };
   },
   methods: {
-    zenDeskAPICall: function() {
-      let useremail = 'coopthree@orbiscommunications.com'
-      let password = ''
-      let encodedHeader = btoa(useremail + ':' + password)
-      let searchString = "status"
-      var headers = {
-        Authorization: "Basic " + password,
-        "Content-Type": "application/json"
-      };
-      fetch(
-        "https://xxxxxx.zendesk.com//api/v2/tickets.json", 
-        // "https://xxxxx.zendesk.com/api/v2/search.json?query=type:ticket status:open"
-        // created>2016-01-01T11:59:00Z created<2014-08-05T24:00:00Z
-        // updated<2016-01-01
-        {
-          method: "GET",
-          headers: headers
-        }
-      )
-        .then(response => {
-          return response.json();
-        })
-        .then(jsonData => {
-          this.Unresponded = jsonData;
-          this.Unsolved = jsonData;
-          this.PassedSLA = jsonData;
-          this.All = jsonData;
-        });
+    getParameterByName: function(name, url) {
+      if (!url) url = window.location.search;
+          name = name.replace(/[\[\]]/g, '\\$&');
+          var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, ' '));
     },
-    jsonLoop: function() {
-      let unrespond = 0;
-      let unsolved = 0;
-      let passed = 0;
-      let all = 0;
-      for (var i = 0; i < jsonData.length; i++) {
-        if(jsonData[i].status = "open") {
-          unrespond++
-        }
-      }
+    oAuthorizatonCodeGet: function() {
+        var redirect_uri = encodeURI('http://localhost:3000')
+        var client_id = encodeURI('otto_integration')
+        var state = '555'
+        var givenString = 'https://{subdomain}.zendesk.com/oauth/authorizations/new?response_type=code&redirect_uri={your_redirect_url}&client_id={your_unique_identifier}&scope=read%20write'
+        var redirectURI = 'https://orbiscommunications.zendesk.com/oauth/authorizations/new?response_type=code&redirect_uri=' + redirect_uri + '&client_id=' + client_id + '&scope=read'
+        console.log(givenString);
+        console.log(redirectURI);
+        window.location.href = redirectURI;
+    },
+    oAuthorizationExchange: function() {
+        var authCode = encodeURI(this.getParameterByName("code", window.location.search));
+        var client_id = encodeURI('otto_integration')
+        var secret = encodeURI('bb44c63e802b402b6c5e4ad611e4ee662f0857f47ef62e2643e1169ef678a14a')
+        var redirect_uri = encodeURI('http://localhost:3000')
+        console.log("Auth Code: " + authCode);
+        var headers = {                                         
+          "Content-Type" : "application/json",
+          "Access-Control-Allow-Origin": "*"
+        }; 
+        var zenDeskData = 
+          {
+             "grant_type": "authorization_code",
+             "code": authCode,
+             "client_id": client_id,
+             "client_secret": secret,
+             "redirect_uri": redirect_uri,
+             "scope": '["tickets:read"]'
+          }
+          console.log(zenDeskData);
+          fetch(
+            'https://orbiscommunications.zendesk.com/oauth/tokens',
+            {
+              method: "POST",
+              headers: headers,
+              data: zenDeskData
+            })
+            .then(response => {
+              return response.json();
+            })
+            .then(jsonData => {
+              var oAuthToken = 'some response'
+              // this.oAccessTokenCall(oAuthToken)
+            });
     },
 
-    nextPageFetch: function() {
-
+    oAccessWithTokenCall: function(oAuthToken) {
+      var headers = {                                         
+          "Authorization" : "Bearer " + 'dda80502a0fc70f73c300e567ed8d5a7e40b71183f45ae4a805375368485cec4',
+          "Content-Type" : "application/json"
+        }; 
+        fetch(
+            'https://orbiscommunications.zendesk.com/api/v2/search.json?query=type:ticket status:Open',
+            {
+              method: "GET",
+              headers: headers,
+            })
+            .then(response => {
+              return response.json();
+            })
+            .then(jsonData => {
+              this.Unsolved = jsonData.count;
+            });
+         fetch(
+            'https://orbiscommunications.zendesk.com/api/v2/search.json?query=type:ticket status:New',
+            {
+              method: "GET",
+              headers: headers,
+            })
+            .then(response => {
+              return response.json();
+            })
+            .then(jsonData => {
+              this.Unresponded = jsonData.count;
+            });
+          fetch(
+            'https://orbiscommunications.zendesk.com/api/v2/search.json?query=type:ticket status:Solved',
+            {
+              method: "GET",
+              headers: headers,
+            })
+            .then(response => {
+              return response.json();
+            })
+            .then(jsonData => {
+              this.PassedSLA = jsonData.count;
+            });
+          var self = this;
+          setTimeout(function() {
+            self.All = self.Unresponded + self.PassedSLA + self.Unsolved
+          }, 3000)
     },
-
-    scheduleDate: function() {
+    scheduleZenDeskUpdate: function() {
       var self = this;
-      schedule.scheduleJob('*/15 * * * *', function(){
+      schedule.scheduleJob('*/1 * * * *', function(){
         console.log("ZenDesk Called.");
-        this.zenDeskAPICall();
+        self.oAccessWithTokenCall();
       });
     },
   },
   mounted() {
-    //  this.scheduleDate();
+    this.oAuthorizationExchange()
+    this.oAccessWithTokenCall()
+    this.scheduleZenDeskUpdate()
   }
 };
 </script>

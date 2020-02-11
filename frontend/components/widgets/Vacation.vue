@@ -15,7 +15,7 @@ a series of arrays to display the data in the way we want.
     <p>Upcoming Out of Office:</p>
     <div class="vacationItem" v-for="m in this.upcomingVacationsArray" :key="m.id">
       <span class="greyCircle"></span>
-      {{m.name}} Starts Vacation on: {{m.startDate}}
+      {{m.name}} leaves on: {{m.startDate}}
     </div>
   </div>
 </template>
@@ -87,21 +87,6 @@ export default {
           cutOffArray.push(testArray[i]);
         }
       }
-      for (var i = 0; i < cutOffArray.length; i++) {
-          let splitDate = cutOffArray[i].startDate.split("-");
-          let year = splitDate[0];
-          let month = monthNames[splitDate[1].replace('0', '')-1];
-          let day = splitDate[2];
-          cutOffArray[i].startDate = month + " " + day + " " + year;
-      }
-      for (var i = 0; i < cutOffArray.length; i++) {
-          let splitDate = cutOffArray[i].endDate.split("-");
-          let year = splitDate[0];
-          let month = monthNames[splitDate[1].replace('0', '')-1];
-          let day = splitDate[2];
-          cutOffArray[i].endDate = month + " " + day + " " + year;
-      }
-      console.log(cutOffArray);
       return cutOffArray;
     },
 
@@ -128,6 +113,32 @@ export default {
       var upcomingArray = upcomingVacations.sort(
         (a, b) => new Date(a.startDate) - new Date(b.startDate)
       );
+        currentArray.forEach(function(vacation) {
+          let splitDate = vacation.startDate.split("-");
+          let year = splitDate[0];
+          let month = monthNames[splitDate[1].replace('0', '')-1];
+          let day = splitDate[2];
+          vacation.startDate = month + " " + day + " " + year;
+
+          splitDate = vacation.endDate.split("-");
+          year = splitDate[0];
+          month = monthNames[splitDate[1].replace('0', '')-1];
+          day = splitDate[2];
+          vacation.endDate = month + " " + day + " " + year;
+        });
+         upcomingArray.forEach(function(vacation) {
+          let splitDate = vacation.startDate.split("-");
+          let year = splitDate[0];
+          let month = monthNames[splitDate[1].replace('0', '')-1];
+          let day = splitDate[2];
+          vacation.startDate = month + " " + day + " " + year;
+
+          splitDate = vacation.endDate.split("-");
+          year = splitDate[0];
+          month = monthNames[splitDate[1].replace('0', '')-1];
+          day = splitDate[2];
+          vacation.endDate = month + " " + day + " " + year;
+        });
       return [currentArray, upcomingArray];
     },
 
@@ -192,12 +203,14 @@ export default {
   computed: {
     vacations: {
       get: function() {
+        console.log("COMPUTED VACATIONS FIRED");
         return this.$store.state.vacation.all;
       }
-    }
+    } 
   },
   watch: {
     vacations() {
+      console.log("WATCH VACATIONS FIRED");
       this.createVacationsArray();
     }
   }

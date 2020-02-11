@@ -124,7 +124,6 @@ import Vue from 'vue'
         },
         watch: {
           deployments() {
-            console.log("y");
             this.deploymentFormatted = this.createFormattedDeploymentArray();
           },
           numberOfSlides : function(val, oldVal){

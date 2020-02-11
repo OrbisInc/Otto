@@ -10,6 +10,7 @@
       <li class="ticker__item">
         <!-- Team Sprint Details text to be displyed directly to the screen could go here, for example--> 
         <div id="jiraData"></div>
+        <!-- <button type="button" class="modal__btn--close js--close--modal" @click="oAuthTwoAttempt"><i class="material-icons">Jira Call</i></button> -->
         <!-- the Stacked Bar Chart will be written in this div -->
       </li>
     </ul>
@@ -23,6 +24,7 @@
     name: "Jira",                           // the name of the Vue "component"
     data() {                                // the variable to be used in this file are declared
       return {
+        redirectedRecently: false,
 
         outcomeOpenIssues: 0,               // initialized to hold the number of open issues in the Outcome Team's current Sprint
         outcomeInProgressIssues: 0,         // ... and their issues that are "In Progress" ..
@@ -58,7 +60,7 @@
         let api_token = "tAe1rrWGwsJgboUXjIgH13DA";             // ... and a token to Authenticate that user.
         let encodedHeader = btoa(useremail + ":" + api_token);  // the process for Basic Authentication, found at: 
         var headers = {                                         // https://developer.atlassian.com/cloud/jira/platform/basic-auth-for-rest-apis/
-          Authorization: "Basic " + encodedHeader,
+          "Authorization": "Basic " + encodedHeader,
           "Content-Type": "application/json"
         };
 
@@ -349,12 +351,55 @@
           document.getElementById("jiraData")           // .. that is, in the div "jiraData"
         );
         chart.draw(data, options_fullStacked);          // the chart is drawn
-      }
+      },
+
+      oAuthTwoAttempt: function () {   
+        var redirectURL = `https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=VA7mRLqZTSdJv5711Rx8PuVH69cou7O0&scope=read%3Ajira-work&redirect_uri=http%3A%2F%2Flocalhost%3A3000&state=5555&response_type=code&prompt=consent`
+        this.redirectedRecently = true;
+        window.location.href = redirectURL;
+      },
+      getParameterByName: function(name, url) {
+          if (!url) url = window.location.search;
+          name = name.replace(/[\[\]]/g, '\\$&');
+          var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, ' '));
+      },
+      oAuthExchange: function () {
+          var authCode = this.getParameterByName("code", window.location.search);
+          var headers = {                                         
+            "Content-Type" : "application/json"
+          }; 
+          var jiraData = '"grant_type": "authorization_code","client_id": "VA7mRLqZTSdJv5711Rx8PuVH69cou7O0","client_secret": "hA1bUi58y6cejWTJ-PYPcySmiBgTaBbNfxLCS51HZ1eS8bufFefqKUBjI-4ndT3l","code": "' + authCode + '","redirect_uri": "http%3A%2F%2Flocalhost%3A3000"'
+          //  {
+          //    "grant_type": encodeURI("authorization_code"),
+          //    "client_id": encodeURI("VA7mRLqZTSdJv5711Rx8PuVH69cou7O0"),
+          //    "client_secret": encodeURI("hA1bUi58y6cejWTJ-PYPcySmiBgTaBbNfxLCS51HZ1eS8bufFefqKUBjI-4ndT3l"),
+          //    "code": encodeURI(authCode),
+          //    "redirect_uri": encodeURI('http://localhost:3000')
+          //  }
+          console.log(jiraData);
+          fetch(
+            'https://auth.atlassian.com/oauth/token',
+            {
+              method: "POST",
+              headers: headers,
+              body: JSON.stringify(jiraData)
+            })
+            .then(response => {
+              return response.json();
+            })
+            .then(jsonData => {
+            });
+        }
     },
 
     mounted() {                                   // this Vue life cycle method contains methods so that they will be only implemented after the other code is mounted
       this.scheduleJiraFetch();                   // the time scheduling method commences after mounting ...
       this.jiraFetch();                           // as does the method to fetch data and draw the Chart.
+      // this.oAuthExchange();
     }
   };
 </script>

@@ -1,20 +1,14 @@
 <template>
   <div>
-
     <transition name="modal">
       <div v-if="isOpen">
         <div class="modal is--visible" @click.self="isOpen = false;">
 
           <div class="modal__inner">
             <button type="button" class="modal__btn--close js--close--modal" @click="isOpen = false;"><i class="material-icons">close</i></button>
-            <h3 class="modal__title">Add an {{ this.actionType }}</h3>
-<!-- 
-            <template v-if="this.actionType == 'dAnnouncement'">
-                  <p> Select an announcement to delete: </p>
-                  <div class="display--flex width--100" v-for="m in announcements">
-                    <input type="checkbox" :value="m.id" v-model="deletionIDs" class="ticker__item margin--r--l"> {{m.message}}
-                  </div>
-            </template> -->
+            <button class="btn__default--text btn--info" type="button" @click="openAddPanel">Add </button>
+            <button class="btn__default--text btn--info" type="button" @click="openDeletePanel">Manage {{ this.actionType.replace('delete', '') }} </button>
+            <h3 class="modal__title">Add an {{ this.actionType.replace('delete', '')  }}</h3>
 
             <template v-if="this.actionType == 'Announcement' || this.actionType == 'Alert' ">
               <label class="width--100"> Add an{{this.actionType}} </label>
@@ -75,24 +69,72 @@
               </div>
             </template>
 
-            <template v-if="this.actionType == 'Vacation'">
-                  <div class="display--flex flex--column">
-                  <label class="width--100">Name: </label>
-                  <textarea required v-model="name" name="message" placeholder="Who is on vacation?" class="ticker__item width--100" autofocus></textarea>
-                  <label class="width--100">Start Date: </label>
-                  <div class="display--flex width--100">
-                    <input required v-model="startDate" class="ticker__item margin--r--l" type="date" name="bday">
-                  </div>
-                  <label class="width--100">End Date: </label>
-                  <div class="display--flex width--100">
-                    <input required v-model="endDate" class="ticker__item margin--r--l" type="date" name="bday">
-                  </div>
-              </div>
-            </template>
+              <template v-if="this.actionType == 'Vacation'">
+                <div class="display--flex flex--column">
+                      <label class="width--100">Name: </label>
+                      <textarea required v-model="name" name="message" placeholder="Who is on vacation?" class="ticker__item width--100" autofocus></textarea>
+                      <label class="width--100">Start Date: </label>
+                      <div class="display--flex width--100">
+                        <input required v-model="startDate" class="ticker__item margin--r--l" type="date" name="bday">
+                      </div>
+                      <label class="width--100">End Date: </label>
+                      <div class="display--flex width--100">
+                      <input required v-model="endDate" class="ticker__item margin--r--l" type="date" name="bday">
+                    </div>
+                </div>
+              </template>
+
+             <template v-if="this.actionType == 'deleteAlert'">
+                  <br>
+              <label>Select something to delete:</label>
+               <select id= "birthday" v-model="deletionIDs">
+                 <option v-bind:value="m.id" :key="m.id" v-for="m in announcements">{{m.message}}</option>
+               </select>
+            </template>   
+
+            <template v-if="this.actionType == 'deleteAnnouncement'">
+                 <br>
+              <label>Select something to delete:</label>
+               <select id= "birthday" v-model="deletionIDs">
+                 <option v-bind:value="m.id" :key="m.id" v-for="m in announcements">{{m.message}}</option>
+               </select>
+            </template>   
+
+            <template v-if="this.actionType == 'deleteBirthday'">
+              <br>
+              <label>Select something to delete:</label>
+               <select id= "birthday" v-model="deletionIDs">
+                 <option v-bind:value="m.id" :key="m.id" v-for="m in birthdays">{{m.name}}</option>
+               </select>
+            </template> 
+
+            <template v-if="this.actionType == 'deleteDeployment'">
+                 <br>
+              <label>Select something to delete:</label>
+               <select id= "birthday" v-model="deletionIDs">
+                 <option v-bind:value="m.id" :key="m.id" v-for="m in deployments">{{m.school}}</option>
+               </select>
+            </template> 
+
+            <template v-if="this.actionType == 'deleteEvent'">
+                 <br>
+              <label>Select something to delete:</label>
+               <select id= "birthday" v-model="deletionIDs">
+                 <option v-bind:value="m.id" :key="m.id" v-for="m in events">{{m.title}}</option>
+               </select>
+            </template> 
+
+            <template v-if="this.actionType == 'deleteVacation'">
+                 <br>
+              <label>Select something to delete:</label>
+               <select id= "birthday" v-model="deletionIDs">
+                 <option v-bind:value="m.id" :key="m.id" v-for="m in vacations">{{m.name}}</option>
+               </select>
+            </template> 
 
             <br>
-            <button v-if="this.actionType != 'dAnnouncement'" class="btn__default--text btn--info" type="button" @click="postRequest">Add</button>
-            <!-- <button v-if="this.actionType == 'dAnnouncement'" class="btn__default--text btn--info" type="button" @click="deleteRequest">Delete</button> -->
+            <button v-if='!this.actionType.includes("delete")' class="btn__default--text btn--info" type="button" @click="postRequest">Add</button>
+            <button v-if='this.actionType.includes("delete")' class="btn__default--text btn--info" type="button" @click="deleteRequest">Delete</button>
           </div>
 
         </div>
@@ -107,24 +149,24 @@
       <h6 aria-hidden="true" class="nav--interaction__title margin--b--xl">Actions</h6>
       <div class="nav--interaction__list" aria-controls="otto__actions">
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "alert", "Alert")'>Add Alert</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "alert", "Alert")'>Manage Alert</button>
         </div>
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "announcement", "Announcement")'>Add Announcement</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "announcement", "Announcement")'>Manage Announcement</button>
         </div>
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "birthday", "Birthday")'>Add Birthday</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "birthday", "Birthday")'>Manage Birthday</button>
         </div>
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "deployment", "Deployment")'>Add Deployment</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "deployment", "Deployment")'>Manage Deployment</button>
         </div> 
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "event", "Event")'>Add Event</button>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "event", "Event")'>Manage Event</button>
         </div>
         <div class="nav--interaction__item">
-          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "vacation", "Vacation")'>Add Out of Office</button>
-        </div>         
-      </div>
+          <button class="nav--interaction__button js--btn-open-transcript" @click='openModal(hostURL + "vacation", "Vacation")'>Manage Out of Office</button>
+        </div>   
+        </div>      
     </nav>
   </div>
 </template>
@@ -147,7 +189,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               name: '',
               eventTitle: '',
               eventLocation: '',
-
+              
               school: '',
               deploymentDate: 'TBD',
               expirationDate: '',
@@ -162,7 +204,9 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
 
               fetchURL: '', 
               buttonText: '', 
-              actionType: ''
+              actionType: '',
+
+              deletionIDs: '',
             };
         },
         methods: {
@@ -216,37 +260,100 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               this.expirationDate = '',
               this.isOpen = false;
           },
+          deleteRequest() {
+            console.log("DELTE REQUEST FIRED: ")
+            console.log("Deleted ID's: " + this.deletionIDs);
+            console.log(this.$store.state.vacation.all)
+            var headers = {
+              "Content-Type": "application/json"                         
+            }
+            var data = {
+              id: this.deletionIDs,
+            }
+            fetch(this.fetchURL, {
+              method: "DELETE",
+              headers: headers,
+              body:  JSON.stringify(data)
+                })
+                .then((response) => { 
+                  return response.json();
+                });
+            this.announcements.splice(this.deletionIDs -1, this.deletionIDs - 1);
+            this.deletionIDs = '';
+          },
           openModal: function(route, actionType) {
               this.fetchURL = route;
               this.actionType = actionType;
               this.isOpen = true;
+          },
+          openDeletePanel: function() {
+            this.actionType = "delete" + this.actionType;
+          },
+          openAddPanel: function() {
+            this.actionType = this.actionType.replace('delete', '')
           }
         },
       computed: {
           announcements: {
             cache: false,
             get: function() {         
-              this.numberOfSlides = this.$store.state.announcement.all.length;
               return this.$store
                   .state
                   .announcement
                   .all
             }
+          },
+          vacations: {
+            get: function() {
+              return this.$store.state.vacation.all;
+            },
+            set: function() {
+              return this.$store.state.vacation.all;
+            }
+          },
+          birthdays: {
+            cache: false,
+            get: function() {
+              let all = this.$store.state.birthday.all;
+              return all;
+            }
+          },
+          events: {
+            get: function() {
+              return this.$store.state.event.all;
+            }
+          },
+          deployments: {
+            cache: false,
+            get: function() {       
+              this.numberOfSlides = this.$store.state.deployment.all.length;
+              return this.$store
+                  .state
+                  .deployment
+                  .all
+            }
+          },
+          alerts() {
+            return this.$store.state.alert.all;
           }
+        },
+      watch: {
+        vacations() {
+          this.vacations = this.$store.state.vacation.all;
         }
+      }
     }
 </script>
 
 <style scoped>
+
 .modal__inner, .modal__title, .modal__btn--close {
   background-color: #555555;
 }
 
 .modal__title, .modal__btn--close { 
   color: #d8d8d8;
-
 }
-
 ::placeholder {
   color: white;
   opacity: 1;
@@ -269,14 +376,19 @@ textarea {
   width: 15.0em;
   height: 15.0em;
   max-width: 15.0em;
-
+  text-align: center;
 }
+
+.nav--interaction__list {
+  text-align: center;
+}
+
 .nav--interaction__button {
   font-size: 1.7em;
   margin-top: 0.7em;
   display: block;
-  width: 100%;
   text-align: center;
+  width: 100%;
 }
 
 .nav--interaction__button:hover {

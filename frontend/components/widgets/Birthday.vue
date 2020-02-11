@@ -62,6 +62,9 @@ export default {
   text-align: center;
   font-weight: bold;
 }
+.birthdayItems p {
+    margin: auto;
+}
 .cakeImage {
   width: 3em;
   height: 3em;

@@ -113,6 +113,9 @@ export default {
     this.scheduledDatabaseMaintenance();
   },
   watch: {
+    announcements() {
+      this.numberOfSlides = this.$store.state.announcement.all.length;
+    },
     numberOfSlides: function(val, oldVal) {
       if (val != oldVal) {
         this.renderSlider = false;
