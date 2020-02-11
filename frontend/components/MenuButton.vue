@@ -88,7 +88,7 @@
                   <br>
               <label>Select something to delete:</label>
                <select id= "birthday" v-model="deletionIDs">
-                 <option v-bind:value="m.id" :key="m.id" v-for="m in announcements">{{m.message}}</option>
+                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in alerts">{{m.message}}</option>
                </select>
             </template>   
 
@@ -96,7 +96,7 @@
                  <br>
               <label>Select something to delete:</label>
                <select id= "birthday" v-model="deletionIDs">
-                 <option v-bind:value="m.id" :key="m.id" v-for="m in announcements">{{m.message}}</option>
+                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in announcements">{{m.message}}</option>
                </select>
             </template>   
 
@@ -104,7 +104,7 @@
               <br>
               <label>Select something to delete:</label>
                <select id= "birthday" v-model="deletionIDs">
-                 <option v-bind:value="m.id" :key="m.id" v-for="m in birthdays">{{m.name}}</option>
+                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in birthdays">{{m.name}}</option>
                </select>
             </template> 
 
@@ -112,7 +112,7 @@
                  <br>
               <label>Select something to delete:</label>
                <select id= "birthday" v-model="deletionIDs">
-                 <option v-bind:value="m.id" :key="m.id" v-for="m in deployments">{{m.school}}</option>
+                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in deployments">{{m.school}}</option>
                </select>
             </template> 
 
@@ -120,7 +120,7 @@
                  <br>
               <label>Select something to delete:</label>
                <select id= "birthday" v-model="deletionIDs">
-                 <option v-bind:value="m.id" :key="m.id" v-for="m in events">{{m.title}}</option>
+                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in events">{{m.title}}</option>
                </select>
             </template> 
 
@@ -128,7 +128,7 @@
                  <br>
               <label>Select something to delete:</label>
                <select id= "birthday" v-model="deletionIDs">
-                 <option v-bind:value="m.id" :key="m.id" v-for="m in vacations">{{m.name}}</option>
+                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in vacations">{{m.name}}</option>
                </select>
             </template> 
 
@@ -262,13 +262,15 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
           },
           deleteRequest() {
             console.log("DELTE REQUEST FIRED: ")
-            console.log("Deleted ID's: " + this.deletionIDs);
+            console.log("Deleted ID's: " + this.deletionIDs[0]);
+            console.log("Deleted ID's: " + this.deletionIDs[1]);
             console.log(this.$store.state.vacation.all)
+            var arrayToRemoveFrom = this.actionType.replace('delete', '');
             var headers = {
               "Content-Type": "application/json"                         
             }
             var data = {
-              id: this.deletionIDs,
+              id: this.deletionIDs[1],
             }
             fetch(this.fetchURL, {
               method: "DELETE",
@@ -278,7 +280,25 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
                 .then((response) => { 
                   return response.json();
                 });
-            this.announcements.splice(this.deletionIDs -1, this.deletionIDs - 1);
+            console.log(arrayToRemoveFrom);
+            if (arrayToRemoveFrom == 'Announcement') {
+              this.announcements.splice(this.deletionIDs[0], 1);
+            }
+            if (arrayToRemoveFrom == 'Alert') {
+              this.alerts.splice(this.deletionIDs[0], 1);
+            }
+            if (arrayToRemoveFrom == 'Birthday') {
+              this.birthdays.splice(this.deletionIDs[0], 1);
+            }
+            if (arrayToRemoveFrom == 'Deployment') {
+              this.deployments.splice(this.deletionIDs[0], 1);
+            }
+            if (arrayToRemoveFrom == 'Event') {
+              this.events.splice(this.deletionIDs[0], 1);
+            }  
+            if (arrayToRemoveFrom == 'Vacation') {
+              this.vacations.splice(this.deletionIDs[0], 1);
+            }                                       
             this.deletionIDs = '';
           },
           openModal: function(route, actionType) {
@@ -294,6 +314,9 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
           }
         },
       computed: {
+          alerts() {
+            return this.$store.state.alert.all;
+          },
           announcements: {
             cache: false,
             get: function() {         
