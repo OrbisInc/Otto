@@ -10,8 +10,7 @@
       <li class="ticker__item">
         <!-- Team Sprint Details text to be displyed directly to the screen could go here, for example--> 
         <div id="jiraData"></div>
-        <!-- <button type="button" class="modal__btn--close js--close--modal" @click="oAuthTwoAttempt"><i class="material-icons">Jira Call</i></button> -->
-        <!-- the Stacked Bar Chart will be written in this div -->
+        <!-- BUT, the Stacked Bar Chart will be written in this div!!! -->
       </li>
     </ul>
   </section>
@@ -22,7 +21,7 @@
 
   export default {                          // this Vue component is made available to index.vue through the export command
     name: "Jira",                           // the name of the Vue "component"
-    data() {                                // the variable to be used in this file are declared
+    data() {                                // the variables to be used in this file are declared
       return {
         redirectedRecently: false,
 
@@ -67,7 +66,7 @@
         // next fetch the Outcome Team's Issues for the current Sprint, by Status. First, their Open Issues: ie. Issues where the Status is coded as "Needs Scoping", "On Hold", "Open", or "Reopened." First, fetching from the URL that the Jira API makes avalable for this purpose:
 
         fetch(
-          "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20in%20(%22Needs%20Scoping%22%2C%20%22On%20Hold%22%2C%20Open%2C%20Reopened)%20AND%20Sprint%20in%20openSprints()",
+          'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20OUTCOME%20AND%20status%20in%20(%22Needs%20Scoping%22%2C%20%22On%20Hold%22%2C%20Open%2C%20Reopened)%20AND%20Sprint%20in%20openSprints()',
           {
             method: "GET",
             headers: headers
@@ -208,7 +207,7 @@
             this.spiralRobotOpenIssues = jsonData.total;
           });
 
-        // Fetch the Spiral Team's In Progress Issues
+        // Fetch the Spiral Robot Team's In Progress Issues
 
         fetch(
           'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20%3D%20"In%20Progress"%20AND%20Sprint%20in%20openSprints()',
@@ -224,7 +223,7 @@
             this.spiralRobotInProgressIssues = jsonData.total;
           });
 
-        // Fetch the Spiral Team's In Review Issues
+        // Fetch the Spiral Robot Team's In Review Issues
 
         fetch(
           'https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20%3D%20"In%20Review"%20AND%20Sprint%20in%20openSprints()',
@@ -240,7 +239,7 @@
             this.spiralRobotInReviewIssues = jsonData.total;
           });
 
-        // Fetch the Spiral Team's Closed Issues
+        // Fetch the Spiral Robot Team's Closed Issues
 
         fetch(
           "https://orbisinc.atlassian.net/rest/api/3/search?jql=project%20%3D%20SPIRAL%20AND%20status%20in%20(Closed%2C%20Resolved)%20AND%20Sprint%20in%20openSprints()",
@@ -256,12 +255,12 @@
             this.spiralRobotClosedIssues = jsonData.total;
 
 
-          // After gathering all the necessary data, load it into the Google Chart module, with sufficient delay so that the data can be loaded before the 3 Stacked Bar Charts are drawn. The setTimeout function ensures this.
+          // After gathering all the necessary data, load it into the Google Chart module, with sufficient delay so that the data can actually be loaded before the 3 Stacked Bar Charts are drawn. The setTimeout function ensures this.
 
             setTimeout(function() {
-              google.charts.load("current", { packages: ["corechart", "bar"] }); // the chart data is loaded
+              google.charts.load("current", { packages: ["corechart", "bar"] });  // the chart data is loaded
               google.charts.setOnLoadCallback(jira.drawChart);                    // the drawChart function will be called ...
-            }, 3000);       // after a 3000 millisecond delay.
+            }, 3000);                                                             // after a 3000 millisecond delay.
           });
       },
 
@@ -295,7 +294,7 @@
 
           [
             "Campus Connect",
-            this.campusConnectOpenIssues,         // similarly, the fetched data for the Campus Connect team's Opn issues is used to draw a color block for that Team's Stacked bar ...
+            this.campusConnectOpenIssues,         // similarly, the fetched data for the Campus Connect team's Open issues is used to draw a color block for that Team's Stacked bar ...
             this.campusConnectOpenIssues,         // ... and the text to go along with that color block.
             this.campusConnectInProgressIssues,   // ... for each Issue Status for the Campus Connect Team
             this.campusConnectInProgressIssues,
@@ -319,7 +318,7 @@
         ]);
 
         var options_fullStacked = {               // this option sets the type of Chart to be drawn, in this case a Stacked Bar Chart.
-          isStacked: "percent",                   // ... a "percent" chart spreads the dat over the full length of the available axis.
+          isStacked: "percent",                   // ... a "percent" chart spreads the data over the full length of the available axis.
           title: "	Jira tracking snapshot",      // The Title of the Chart.
           titlePosition: "top",                   // The Title is positioned at the top of the Chart area.
           titleTextStyle: {
