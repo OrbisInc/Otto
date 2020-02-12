@@ -5,19 +5,17 @@ a series of arrays to display the data in the way we want.
 
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
 <template>
-  <div class="ticker__item in--sidebar padding--a--s noBorder">
-    <p>Currently Out of Office:</p>
-    <div class="vacationItem" v-for="m in this.currentVacationsArray" :key="m.id">
-      <span class="greyCircle"></span>
-      {{m.name}} is back on {{m.endDate}}
+    <div class="ticker__item in--sidebar padding--a--s noBorder">
+        <p>Currently Out of Office:</p>
+        <div class="vacationItem" v-for="m in this.currentVacationsArray" :key="m.id">
+            <span class="greyCircle"></span> {{m.name}} is back on {{m.endDate}}
+        </div>
+        <br />
+        <p>Upcoming Out of Office:</p>
+        <div class="vacationItem" v-for="m in this.upcomingVacationsArray" :key="m.id">
+            <span class="greyCircle"></span> {{m.name}} leaves on: {{m.startDate}}
+        </div>
     </div>
-    <br />
-    <p>Upcoming Out of Office:</p>
-    <div class="vacationItem" v-for="m in this.upcomingVacationsArray" :key="m.id">
-      <span class="greyCircle"></span>
-      {{m.name}} leaves on: {{m.startDate}}
-    </div>
-  </div>
 </template>
 
 <!-- The scripts for the component. This script contains data attributes and methods for this component. -->

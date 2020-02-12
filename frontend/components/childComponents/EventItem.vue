@@ -2,70 +2,70 @@
 
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
 <template>
-  <div class="eventItemWrapperDiv">
-    <div class="schedule-item">
-      <div class="schedule-item__left color--bg--blue">
-        <div class="date">
-          <span class="day">{{this.day}}</span>
-          <span class="month">{{this.month}}</span>
+    <div class="eventItemWrapperDiv">
+        <div class="schedule-item">
+            <div class="schedule-item__left color--bg--blue">
+                <div class="date">
+                    <span class="day">{{this.day}}</span>
+                    <span class="month">{{this.month}}</span>
+                </div>
+                <div class="time">
+                    <span class="schedule-item__left--time-span">{{ this.startHour }}</span>
+                </div>
+            </div>
+            <div class="schedule-item__right">
+                <h5 class="schedule-item__title">
+                    <a href attrs>{{ this.title }}</a>
+                </h5>
+                <span class="schedule-item__location">{{this.location}}</span>
+                <span class="schedule-item__time-status">From {{ this.startHour }} - {{ this.endHour }}</span>
+            </div>
         </div>
-        <div class="time">
-          <span class="schedule-item__left--time-span">{{ this.startHour }}</span>
-        </div>
-      </div>
-      <div class="schedule-item__right">
-        <h5 class="schedule-item__title">
-          <a href attrs>{{ this.title }}</a>
-        </h5>
-        <span class="schedule-item__location">{{this.location}}</span>
-        <span class="schedule-item__time-status">From {{ this.startHour }} - {{ this.endHour }}</span>
-      </div>
     </div>
-  </div>
 </template>
 
 <!-- The scripts for the component. This script contains data attributes and methods for this component. -->
 <script>
-const monthNames = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];
+  const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+  ];
 
-export default {
-  name: "EventItem",
-  props: ["title", "startTime", "endTime", "eventLocation"],
-  data() {
-    return {
-      day: "23",
-      month: "Nov",
-      startHour: "3:00PM",
-      endHour: "4:30PM",
-      location: this.eventLocation
-    };
-  },
-  methods: {
-    // dissectTime() will utilize the props (arguments) taken in by the component, and parse them into the related attributes for this event item for display in the template.
-    dissectTime: function() {
-      this.day = this.startTime.slice(8, 10);
-      this.month = monthNames[this.startTime.slice(5, 7).replace("0", "") - 1];
-      this.startHour = this.startTime.slice(10, this.startTime.length);
-      this.endHour = this.endTime.slice(10, this.startTime.length);
-    }
-  },
-  mounted() {
-    this.dissectTime();
-  }
-};
+  export default {
+      name: "EventItem",
+      props: ["title", "startTime", "endTime", "eventLocation"],
+      data() {
+          return {
+              day: "23",
+              month: "Nov",
+              startHour: "3:00PM",
+              endHour: "4:30PM",
+              location: this.eventLocation
+          };
+      },
+      methods: {
+          // dissectTime() will utilize the props (arguments) taken in by the component, and parse them into the related attributes for this event item for display in the template.
+          dissectTime: function() {
+              this.day = this.startTime.slice(8, 10);
+              this.month = monthNames[this.startTime.slice(5, 7).replace("0", "") - 1];
+              this.startHour = this.startTime.slice(10, this.startTime.length);
+              this.endHour = this.endTime.slice(10, this.startTime.length);
+          }
+      },
+      mounted() {
+          this.dissectTime();
+      }
+  };
 </script>
 
 <!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->

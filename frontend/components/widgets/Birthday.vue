@@ -2,12 +2,12 @@
 
 <!-- The template for the component. This template formats the birthday using spiral robots CSS and HTML -->
 <template>
-  <div class="ticker__item in--sidebar padding--a--s noBorder">
-    <span class="birthdayItems" v-for="m in birthdays">
+    <div class="ticker__item in--sidebar padding--a--s noBorder">
+        <span class="birthdayItems" :key="m.id" v-for="m in birthdays">
       <p v-if="getDate() == m.date">Happy Birthday {{m.name}}!</p>
       <img class="cakeImage" v-if="getDate() == m.date" src="/funPicture.png" />
     </span>
-  </div>
+    </div>
 </template>
 
 <!-- The scripts for the component. This script contains a few data attributes and methods for this component. -->

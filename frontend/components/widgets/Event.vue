@@ -5,10 +5,10 @@ a series of arrays to display the data in the way that we want.
 
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
 <template>
-  <div class="ticker__item in--sidebar padding--a--s noBorder">
-    <p>Happening Today:</p>
-    <span v-if="this.events.length">
-      <span v-if="currentEvents.length" v-for="m in currentEvents">
+    <div class="ticker__item in--sidebar padding--a--s noBorder">
+        <p>Happening Today:</p>
+        <span v-if="this.events.length">
+      <span v-if="currentEvents.length" :key="m.id" v-for="m in currentEvents">
         <EventItem
           v-if="currentEvents.length"
           :title="m.title"
@@ -17,10 +17,10 @@ a series of arrays to display the data in the way that we want.
           :eventLocation="m.location"
         />
       </span>
-    </span>
+        </span>
 
-    <p>Up Next:</p>
-    <span v-if="upcomingEvents.length" v-for="m in upcomingEvents">
+        <p>Up Next:</p>
+        <span v-if="upcomingEvents.length" :key="m.id" v-for="m in upcomingEvents">
       <EventItem
         v-if="upcomingEvents.length"
         :title="m.title"
@@ -29,7 +29,7 @@ a series of arrays to display the data in the way that we want.
         :eventLocation="m.location"
       />
     </span>
-  </div>
+    </div>
 </template>
 
 <!-- The scripts for the component. This script contains a few data attributes and methods for this component. -->

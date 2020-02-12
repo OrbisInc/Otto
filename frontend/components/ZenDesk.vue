@@ -37,7 +37,7 @@ This pane is used to display information about ZenDesk to the users.
   </section>
 </template>
 
-
+<!-- The scripts for the component. This script contains a few data attributes and methods for this component. -->
 <script>
 import schedule from 'node-schedule'
 
@@ -52,6 +52,7 @@ export default {
     };
   },
   methods: {
+//  This method will return a string query parameter in the URL. Used for fetching the authorization code when the user grants permission.
     getParameterByName: function(name, url) {
       if (!url) url = window.location.search;
           name = name.replace(/[\[\]]/g, '\\$&');
@@ -61,6 +62,7 @@ export default {
           if (!results[2]) return '';
           return decodeURIComponent(results[2].replace(/\+/g, ' '));
     },
+//  This method will speak to the server and promp the user to log in to give permission. This returns to the page with an authorization code.
     oAuthorizatonCodeGet: function() {
         var redirect_uri = encodeURI('http://localhost:3000')
         var client_id = encodeURI('otto_integration')
@@ -71,6 +73,7 @@ export default {
         console.log(redirectURI);
         window.location.href = redirectURI;
     },
+//  This method will exchange the authorization code given for a token to be used in requests.
     oAuthorizationExchange: function() {
         var authCode = encodeURI(this.getParameterByName("code", window.location.search));
         var client_id = encodeURI('otto_integration')
@@ -106,7 +109,7 @@ export default {
               // this.oAccessTokenCall(oAuthToken)
             });
     },
-
+//  This method makes ZenDesk requests with the authorization token that is retrieved from the previous methods.
     oAccessWithTokenCall: function(oAuthToken) {
       var headers = {                                         
           "Authorization" : "Bearer " + 'dda80502a0fc70f73c300e567ed8d5a7e40b71183f45ae4a805375368485cec4',
@@ -124,7 +127,7 @@ export default {
             .then(jsonData => {
               this.Unsolved = jsonData.count;
             });
-         fetch(
+        fetch(
             'https://orbiscommunications.zendesk.com/api/v2/search.json?query=type:ticket status:New',
             {
               method: "GET",
@@ -136,7 +139,7 @@ export default {
             .then(jsonData => {
               this.Unresponded = jsonData.count;
             });
-          fetch(
+        fetch(
             'https://orbiscommunications.zendesk.com/api/v2/search.json?query=type:ticket status:Solved',
             {
               method: "GET",
@@ -153,6 +156,8 @@ export default {
             self.All = self.Unresponded + self.PassedSLA + self.Unsolved
           }, 3000)
     },
+
+//  This method schedules ZenDesk to be updated every minute.
     scheduleZenDeskUpdate: function() {
       var self = this;
       schedule.scheduleJob('*/1 * * * *', function(){
