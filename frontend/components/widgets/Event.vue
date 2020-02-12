@@ -8,7 +8,7 @@ a series of arrays to display the data in the way that we want.
     <div class="ticker__item in--sidebar padding--a--s noBorder">
         <p>Happening Today:</p>
         <span v-if="this.events.length">
-      <span v-if="currentEvents.length" :key="m.id" v-for="m in currentEvents">
+      <span :key="m.id" v-for="m in currentEvents">
         <EventItem
           v-if="currentEvents.length"
           :title="m.title"
@@ -20,7 +20,7 @@ a series of arrays to display the data in the way that we want.
         </span>
 
         <p>Up Next:</p>
-        <span v-if="upcomingEvents.length" :key="m.id" v-for="m in upcomingEvents">
+        <span :key="m.id" v-for="m in upcomingEvents">
       <EventItem
         v-if="upcomingEvents.length"
         :title="m.title"

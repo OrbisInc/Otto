@@ -18,10 +18,11 @@ There are two types of modals, delete modals and add modals. Both modals are rep
                         <button class="btn__default--text btn--info" type="button" @click="openAddPanel">Add </button>
                         <button class="btn__default--text btn--info" type="button" @click="openDeletePanel">Manage {{ this.actionType.replace('delete', '') }} </button>
 
+                        <h3 class="modal__title">Manage {{ this.actionType.replace('delete', '').concat('s') }}</h3>
+
                         <!-- This section is responsible for all of the 'add' modal templates. -->
                         <!-- Add Announcement or Alert Template -->
                         <template v-if="this.actionType == 'Announcement' || this.actionType == 'Alert' ">
-                            <label class="width--100"> Add an{{this.actionType}} </label>
                             <div class="display--flex flex--column">
                                 <textarea required v-model="message" name="message" placeholder="Enter your message" class="ticker__item width--100" autofocus></textarea>
                             </div>

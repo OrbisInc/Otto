@@ -201,14 +201,12 @@ export default {
   computed: {
     vacations: {
       get: function() {
-        console.log("COMPUTED VACATIONS FIRED");
         return this.$store.state.vacation.all;
       }
     } 
   },
   watch: {
     vacations() {
-      console.log("WATCH VACATIONS FIRED");
       this.createVacationsArray();
     }
   }

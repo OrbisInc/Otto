@@ -187,7 +187,6 @@
             return response.json();
           })
           .then(jsonData => {
-            console.log("Test1");
             this.campusConnectClosedIssues = jsonData.total;
           });
 
