@@ -6,6 +6,16 @@
     <div class="tckr">
       <div :key="m.id" v-for="m in alerts" class="tckr__item">{{m.message}}</div>
     </div>
+    <div v-if="m.severity == 'High'" :key="m.id" v-for="m in alerts" class="highAlert">
+      <div class="highAlertMessage">
+        {{ m.message }}
+        <div class="highAlertMessageDate">
+          Nov. 22-25
+        </div>
+      </div>
+      <div class="highAlertSymbol">
+      </div>
+    </div>
   </div>
 </template>
 
@@ -22,13 +32,29 @@ export default {
 
 <!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->
 <style scoped>
-.alertButtonTest {
-  position: absolute;
-  left: 0px;
-  height: 65px !important;
-  width: 60px !important;
-  margin: auto;
-  border-radius: 30% !important;
-  z-index: 100;
-}
+  .highAlert {
+    position: absolute;
+    left: 0;
+    bottom: 9.0em;
+    width: 100%;
+    overflow: hidden;
+    height: 6.5rem;
+    padding-left: 100%;
+    box-sizing: content-box;
+    background-color: red;
+    height: 8%;
+    z-index: 10000 !important;
+  }
+  .highAlertMessage {
+    position: fixed;
+    left: 0;
+    font-size: 3.0em;
+    width: 100%;
+    height: 7.5em;
+    padding-left: 1.0em;
+    background-color: red;
+  }
+  .highAlertMessageDate {
+    color: yellow;
+  }
 </style>

@@ -12,6 +12,21 @@
         <div id="jiraData"></div>
         <!-- BUT, the Stacked Bar Chart will be written in this div!!! -->
       </li>
+      <div class="jiraBadge marginUp">
+         <div class="jiraKey">
+         </div>
+         <div class="jiraStatus">
+            Recently <br> Updated:            
+         </div>
+      </div>
+      <div class="jiraBadge" v-for="badge in recentIssues " :key="badge[0]">
+         <div class="jiraKey">
+           {{ badge[0]  }}
+         </div>
+         <div class="jiraStatus">
+             {{ badge[1] }} 
+         </div>
+      </div>
     </ul>
   </section>
 </template>
@@ -38,7 +53,11 @@
         spiralRobotOpenIssues: 0,           // ... and the same for the Spiral Robot Team
         spiralRobotInProgressIssues: 0,
         spiralRobotInReviewIssues: 0,
-        spiralRobotClosedIssues: 0
+        spiralRobotClosedIssues: 0,
+        
+        recentIssues: [],
+        recentIssueKey: '',
+        recentIssueStatusName: ''
       };
     },
     methods: {                              // the methods to be used by the Vue Component Jira.vue
@@ -252,14 +271,45 @@
           })
           .then(jsonData => {
             this.spiralRobotClosedIssues = jsonData.total;
-
-
           // After gathering all the necessary data, load it into the Google Chart module, with sufficient delay so that the data can actually be loaded before the 3 Stacked Bar Charts are drawn. The setTimeout function ensures this.
 
             setTimeout(function() {
               google.charts.load("current", { packages: ["corechart", "bar"] });  // the chart data is loaded
               google.charts.setOnLoadCallback(jira.drawChart);                    // the drawChart function will be called ...
             }, 3000);                                                             // after a 3000 millisecond delay.
+          });
+
+                fetch(
+            'https://orbisinc.atlassian.net/rest/api/3/search?jql=status%20changed%20during%20(-1h%2Cnow())',
+          {
+            method: "GET",
+            headers: headers
+          }
+        )
+          .then(response => {
+            return response.json();
+          })
+          .then(jsonData => {
+            console.log(jsonData.issues.length);
+
+           if(this.recentIssues.length < jsonData.issues.length) {
+             
+            this.recentIssues = [];
+
+
+            for (let i = 0; i < jsonData.issues.length; i++ ) {
+
+              if (this.recentIssues.length > 3) {
+                break;
+              }
+                console.log("TESTING");
+                this.recentIssueKey = jsonData.issues[i].key;
+                this.recentIssueStatusName = jsonData.issues[i].fields.status.name;                
+                this.recentIssues.push( [this.recentIssueKey , this.recentIssueStatusName] )
+              }
+
+              console.log(this.recentIssues);
+              }
           });
       },
 
@@ -401,3 +451,35 @@
     }
   };
 </script>
+
+<style scoped>
+.jiraBadge {
+  width: 15em;
+  display: inline-block;
+  margin-right: 1em;
+  border: 2px solid silver;
+  background-color: black;
+  height: 8em;
+  border-radius: 1.5em;
+}
+
+.jiraKey {
+  background-color: aquamarine;
+  color:black;
+  font-weight: bold;
+  border-radius: 2.0em;
+  text-align: center;
+  width: 90%;
+  margin: auto;
+  margin-top: 0.8em;
+  font-size: 1.2em;
+} 
+
+.jiraStatus {
+  margin-top: 0.4em;
+  color: white;
+  font-size: 1.5em;
+  text-align: center;
+}
+
+</style>

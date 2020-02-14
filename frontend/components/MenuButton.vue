@@ -22,9 +22,26 @@ There are two types of modals, delete modals and add modals. Both modals are rep
 
                         <!-- This section is responsible for all of the 'add' modal templates. -->
                         <!-- Add Announcement or Alert Template -->
-                        <template v-if="this.actionType == 'Announcement' || this.actionType == 'Alert' ">
+                        <template v-if="this.actionType == 'Announcement'">
                             <div class="display--flex flex--column">
                                 <textarea required v-model="message" name="message" placeholder="Enter your message" class="ticker__item width--100" autofocus></textarea>
+                            </div>
+                            <label class="width--100"> Expires On: </label>
+                            <div class="display--flex width--100">
+                                <input required v-model="expirationDate" name="expirationDate" class="ticker__item margin--r--l" type="date">
+                            </div>
+                        </template>
+
+                        <template v-if="this.actionType == 'Alert' ">
+                            <div class="display--flex flex--column">
+                                <textarea required v-model="message" name="message" placeholder="Enter your message" class="ticker__item width--100" autofocus></textarea>
+                            </div>
+                            <label class="width--100"> Severity: </label>
+                            <div class="display--flex flex--column">
+                              <select v-model="alertSeverity">  
+                                <option> Low </option>
+                                <option> High </option>
+                              </select>
                             </div>
                             <label class="width--100"> Expires On: </label>
                             <div class="display--flex width--100">
@@ -206,6 +223,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               hostURL: this.url,
               isOpen: false,
               message: '',
+              alertSeverity: '',
               name: '',
               eventTitle: '',
               eventLocation: '',
@@ -256,6 +274,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               startsAt: this.startDate + this.startTime,
               endsAt: this.endDate + this.endTime,
               expiresAt: this.expirationDate,
+              severity: this.alertSeverity,
               
             }
               fetch(this.fetchURL, {
