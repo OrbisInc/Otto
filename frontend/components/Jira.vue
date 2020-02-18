@@ -12,6 +12,28 @@
         <div id="jiraData"></div>
         <!-- BUT, the Stacked Bar Chart will be written in this div!!! -->
       </li>
+
+    </ul>
+
+    <client-only>
+      <vue-tiny-slider v-if="this.recentIssues.length" ref="tinySlider"
+        class="list--plain ticker"
+        :items="1"
+        slide-by="page"
+        :controls="false"
+        :nav="true"
+        :autoplay-button-output="false"
+        :speed="7000"
+        :autoplay="true"
+        :autoplay-timeout="10000"
+      >
+        <div class="ticker__item tns-item" :key="m[0]" v-for="m in recentIssues">
+          <div class="badgeSummary"> {{ m[0] }} : {{m[2]}} </div>
+        </div>
+      </vue-tiny-slider>
+    </client-only>
+
+
       <div class="jiraBadge marginUp">
          <div class="jiraKey">
          </div>
@@ -19,6 +41,10 @@
             Recently <br> Updated:            
          </div>
       </div>
+
+      
+
+
       <div class="jiraBadge" v-for="badge in recentIssues " :key="badge[0]">
          <div class="jiraKey">
            {{ badge[0]  
@@ -29,7 +55,7 @@
              {{ badge[1] }} 
          </div>
       </div>
-    </ul>
+    
   </section>
 </template>
 
@@ -59,7 +85,8 @@
         
         recentIssues: [],
         recentIssueKey: '',
-        recentIssueStatusName: ''
+        recentIssueStatusName: '',
+        recentIssueSummary: ''
       };
     },
     methods: {                              // the methods to be used by the Vue Component Jira.vue
@@ -304,10 +331,15 @@
                 break;
               }
                 this.recentIssueKey = jsonData.issues[i].key;
-                this.recentIssueStatusName = jsonData.issues[i].fields.status.name;                
-                this.recentIssues.push( [this.recentIssueKey , this.recentIssueStatusName] )
+                this.recentIssueStatusName = jsonData.issues[i].fields.status.name;
+                this.recentIssueSummary = jsonData.issues[i].fields.summary;              
+                this.recentIssues.push( [this.recentIssueKey , this.recentIssueStatusName , this.recentIssueSummary] );
               }
               }
+
+
+
+
           });
       },
 
@@ -388,9 +420,9 @@
           backgroundColor: "transparent",         // the background color of the chart iwll also be invisible
 
           vAxis: {                                // the characteristics of the vertical axis of the chart
-            textStyle: { color: "white", fontSize: 30 } // these text fields name the Teams
+            textStyle: { color: "white", fontSize: 20 } // these text fields name the Teams
           },
-          height: "100%",                         // the Stacked Bars fill up as much of the available space as possible, vertically ...
+          height: 600,                         // the Stacked Bars fill up as much of the available space as possible, vertically ...
           width: "100%"                           // ... and horizontally
         };
         var chart = new google.visualization.BarChart(  // this variable of the Chart script determines where it will be written ...
@@ -457,7 +489,7 @@
   margin-right: 1em;
   border: 2px solid silver;
   background-color: black;
-  height: 8em;
+  height: 7.5em;
   border-radius: 1.5em;
 }
 
@@ -473,11 +505,23 @@
   font-size: 1.2em;
 } 
 
+.badgeSummary {
+  font-size: 2.0em;
+}
+
 .jiraStatus {
   margin-top: 0.4em;
   color: white;
   font-size: 1.5em;
   text-align: center;
+}
+.ticker__item {
+  height: 30%;
+}
+.jiraData {
+  position: absolute;
+  top: 0;
+  height: 30% !important;
 }
 
 </style>
