@@ -12,7 +12,6 @@
         <div id="jiraData"></div>
         <!-- BUT, the Stacked Bar Chart will be written in this div!!! -->
       </li>
-
     </ul>
 
     <client-only>
@@ -33,7 +32,6 @@
       </vue-tiny-slider>
     </client-only>
 
-
       <div class="jiraBadge marginUp">
          <div class="jiraKey">
          </div>
@@ -41,9 +39,6 @@
             Recently <br> Updated:            
          </div>
       </div>
-
-      
-
 
       <div class="jiraBadge" v-for="badge in recentIssues " :key="badge[0]">
          <div class="jiraKey">
@@ -507,6 +502,8 @@
 
 .badgeSummary {
   font-size: 2.0em;
+  overflow: hidden;
+  height: 4.0em;
 }
 
 .jiraStatus {
