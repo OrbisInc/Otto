@@ -21,7 +21,9 @@
       </div>
       <div class="jiraBadge" v-for="badge in recentIssues " :key="badge[0]">
          <div class="jiraKey">
-           {{ badge[0]  }}
+           {{ badge[0]  
+           
+           }}
          </div>
          <div class="jiraStatus">
              {{ badge[1] }} 
@@ -290,7 +292,6 @@
             return response.json();
           })
           .then(jsonData => {
-            console.log(jsonData.issues.length);
 
            if(this.recentIssues.length < jsonData.issues.length) {
              
@@ -302,13 +303,10 @@
               if (this.recentIssues.length > 3) {
                 break;
               }
-                console.log("TESTING");
                 this.recentIssueKey = jsonData.issues[i].key;
                 this.recentIssueStatusName = jsonData.issues[i].fields.status.name;                
                 this.recentIssues.push( [this.recentIssueKey , this.recentIssueStatusName] )
               }
-
-              console.log(this.recentIssues);
               }
           });
       },
@@ -368,7 +366,7 @@
 
         var options_fullStacked = {               // this option sets the type of Chart to be drawn, in this case a Stacked Bar Chart.
           isStacked: "percent",                   // ... a "percent" chart spreads the data over the full length of the available axis.
-          title: "	Jira tracking snapshot",      // The Title of the Chart.
+          title: "	Jira Sprint Snapshot",      // The Title of the Chart.
           titlePosition: "top",                   // The Title is positioned at the top of the Chart area.
           titleTextStyle: {
             alignment: "center",                  // the Title's position in the area

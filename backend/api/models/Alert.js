@@ -17,7 +17,8 @@ module.exports = {
   attributes: {
     message: {type: 'string', required: true},
     severity: {type: 'string', defaultsTo: AlertSeverity.Low},
-    active: {type: 'boolean', defaultsTo: true}
+    active: {type: 'boolean', defaultsTo: true},
+    highAlertDate: {type: 'string'}
   },
 
 };

@@ -43,6 +43,9 @@ There are two types of modals, delete modals and add modals. Both modals are rep
                                 <option> High </option>
                               </select>
                             </div>
+                            <div v-if="alertSeverity == 'High'">
+                              <input required v-model="highAlertDate" name="expirationDate" class="ticker__item margin--r--l" type="date">
+                            </div>
                             <label class="width--100"> Expires On: </label>
                             <div class="display--flex width--100">
                                 <input required v-model="expirationDate" name="expirationDate" class="ticker__item margin--r--l" type="date">
@@ -227,6 +230,8 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               name: '',
               eventTitle: '',
               eventLocation: '',
+
+              highAlertDate: '',
               
               school: '',
               deploymentDate: 'TBD',
@@ -275,6 +280,7 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               endsAt: this.endDate + this.endTime,
               expiresAt: this.expirationDate,
               severity: this.alertSeverity,
+              highAlertDate: this.highAlertDate,
               
             }
               fetch(this.fetchURL, {

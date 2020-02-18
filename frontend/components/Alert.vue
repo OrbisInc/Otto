@@ -10,7 +10,7 @@
       <div class="highAlertMessage">
         {{ m.message }}
         <div class="highAlertMessageDate">
-          Nov. 22-25
+          {{m.highAlertDate}}
         </div>
       </div>
       <div class="highAlertSymbol">
