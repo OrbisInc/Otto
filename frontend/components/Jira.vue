@@ -477,6 +477,7 @@
   };
 </script>
 
+<!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->
 <style scoped>
 .jiraBadge {
   width: 15em;

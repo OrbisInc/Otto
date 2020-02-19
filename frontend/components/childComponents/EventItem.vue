@@ -1,4 +1,6 @@
-<!-- This eventItem is a child component. It is used in another component called Event. It serves as a container for a single event item with all related attributes and methods. This component will take in a few props (arguments) to construct itself. -->
+<!-- This eventItem is a child component. It is used in another component called Event. 
+It serves as a container for a single event item with all related attributes and methods. 
+This component will take in a few props (arguments) to construct itself. -->
 
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
 <template>

@@ -29,6 +29,7 @@ export default {
     };
   },
   methods: {
+    // A function to retrieve the date in a format that looks nice.
     getDate: function() {
       var options = {
         weekday: "long",
@@ -47,6 +48,8 @@ export default {
       var dateTime = today.toLocaleDateString("en-US", options) + ' ' + strTime
       return dateTime
     },
+
+    // Using the Fetch API to request the weather from openweather. The apiKey attached to our account is used here for verification.
     weatherAPICall: function() {
       fetch(
         "http://api.openweathermap.org/data/2.5/forecast?id=5969785&APPID=2917c463cf5bbabd5602c2e4c6e388a8",
@@ -66,7 +69,7 @@ export default {
         });
     },
 
-    // The node-scheduler will repeat given the functions given on the given schedule.
+    // The node-scheduler will repeat given the functions given on the given schedule. Updating the weather and time in this case.
     scheduledWeatherAPICall: function() {
       var self = this;
       schedule.scheduleJob("*/1 * * * *", function() {
@@ -81,7 +84,8 @@ export default {
       });
     }
   },
-  // Initializing the module by giving the starting values, and starting the scheduled API Call.
+  
+  // Initializing the module by giving the starting values for the weather and time, and starting the scheduled API Calls.
   mounted() {
     this.weatherAPICall();
     this.currentDate = this.getDate();

@@ -4,9 +4,9 @@
 <template>
     <div class="ticker__item in--sidebar padding--a--s noBorder">
         <span class="birthdayItems" :key="m.id" v-for="m in birthdays">
-      <p v-if="getDate() == m.date">Happy Birthday {{m.name}}!</p>
-      <img class="cakeImage" v-if="getDate() == m.date" src="/funPicture.png" />
-    </span>
+          <p v-if="getDate() == m.date">Happy Birthday {{m.name}}!</p>
+          <img class="cakeImage" v-if="getDate() == m.date" src="/funPicture.png" />
+        </span>
     </div>
 </template>
 
@@ -27,9 +27,6 @@ export default {
         .slice(0, 10)
         .replace(/-/g, "-");
     },
-    organizeData: function() {
-      return birthdays;
-    }
   },
   mounted() {},
   computed: {

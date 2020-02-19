@@ -91,16 +91,17 @@ as well as registering the socket events. -->
     }
 </script>
 
+<!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->
 <style scoped>
-aside {
-  font-weight: bold;
-}
-.ticker__item p{
-  font-size: 3.0em;
-}
+  aside {
+    font-weight: bold;
+  }
+  .ticker__item p{
+    font-size: 3.0em;
+  }
 
-.tns-nav {
-  width: 3.0em;
-  height: 3.0em;
-}
+  .tns-nav {
+    width: 3.0em;
+    height: 3.0em;
+  }
 </style>
