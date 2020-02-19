@@ -1,13 +1,12 @@
 <!-- 
 This component handles the circular menu button in the bottom right corner of the screen.
-This component deals with all of the actions that can be done from the menu, and also deals with the resulting modals that are created.
+This component deals with all of the actions that can be done from the menu.
 
-There are two types of modals, delete modals and add modals. Both modals are represented in the template.
+There are two types of modals, delete modals and add modals. Both modals are contained within their own components in the template.
  -->
 
 <template>
     <div>
-
         <!-- Manage Button. This is the button that is displayed on the main screen. -->
         <button type="button" class="btn btn--menu--circular always--circular color--bg--red js--interaction-btn display--block" id="otto__actions">
             <i class="material-icons">add</i>
@@ -38,188 +37,79 @@ There are two types of modals, delete modals and add modals. Both modals are rep
             </div>
         </nav>
 
+        <!-- This is the beginning of the modals. -->
         <transition name="modal">
           <div v-if="isOpen">
               <div class="modal is--visible" @click.self="isOpen = false;">
                   <!-- This div is responsible for the black background. When the black background is clicked it will no longer display the modal. -->
                   <div class="modal__inner">
 
-                      <!-- This section is responsible for the button displayed at the top of the modal. -->
+                      <!-- This section is responsible for the buttons displayed at the top of the modal. -->
                       <button type="button" class="modal__btn--close js--close--modal" @click="isOpen = false;"><i class="material-icons">close</i></button>
                       <button class="btn__default--text btn--info" type="button" @click="openAddPanel">Add </button>
                       <button class="btn__default--text btn--info" type="button" @click="openDeletePanel">Manage {{ this.actionType.replace('delete', '') }} </button>
-
                       <h3 class="modal__title">Manage {{ this.actionType.replace('delete', '').concat('s') }}</h3>
-  
+
+                    <!-- This component is responsible for all of the Add Modals -->
                       <AddModals
                       :actionTypeProp="this.actionType"
                       :fetchURLProp="this.fetchURL"
                       />
 
+                    <!-- This component is responsible for all of the Delete Modals -->
                       <DeleteModals
                       :actionTypeProp="this.actionType"
                       :fetchURLProp="this.fetchURL"
                       />
                   </div>
-
               </div>
           </div>
       </transition>
     </div>
 </template>
 
+<!-- The scripts for the component. This script contains data attributes and methods for this component. -->
 <script>
 import DeleteModals from "../components/childComponents/DeleteModals";
 import AddModals from "../components/childComponents/AddModals";
 
-    export default {
-      name: 'MenuButton',
-        components: {
-          DeleteModals,
-          AddModals
-        },
-        props: ['url'],
-        data: function(){
-            return {
-              hostURL: this.url,
-              isOpen: false,
-              message: '',
-              alertSeverity: '',
-              name: '',
-              eventTitle: '',
-              eventLocation: '',
-
-              highAlertDate: '',
-              
-              school: '',
-              deploymentDate: 'TBD',
-              expirationDate: '',
-
-              startDate: '',
-              startTime: '',
-              finalStart: '',
-
-              endDate: '',
-              endTime: '',
-              finalEnd: '',
-
-              fetchURL: '', 
-              buttonText: '', 
-              actionType: 'Vacation',
-
-              deletionIDs: '',
-            };
-        },
-        methods: {
-          postRequest() {
-            var headers = {
-              "Content-Type": "application/json"                         
-            }
-            var data = {
-              message: this.message,
-              name: this.name,
-              date: this.startDate,
-              title: this.eventTitle,
-              deploymentDate: this.deploymentDate,
-              location: this.eventLocation,
-              school: this.school,
-              startDate: this.startDate,
-              endDate: this.endDate,
-              startsAt: this.startDate + this.startTime,
-              endsAt: this.endDate + this.endTime,
-              expiresAt: this.expirationDate,
-              severity: this.alertSeverity,
-              highAlertDate: this.highAlertDate,
-              
-            }
-              fetch(this.fetchURL, {
-              method: "POST",
-              headers: headers,
-              body:  JSON.stringify(data)
-                })
-                .then((response) => { 
-                  return response.json();
-                  this.announcement = ''
-                });
-              this.message = '',
-              this.name = '',
-              this.startDate = '',
-              this.eventTitle = '',
-              this.deploymentDate = 'TBD',
-              this.school = '',
-              this.startDate = '',
-              this.endDate = '',
-              this.startDate + this.startTime,
-              this.endDate + this.endTime,
-              this.expirationDate = '',
-              this.isOpen = false;
-          },
-          openModal: function(route, actionType) {
-              this.fetchURL = route;
-              this.actionType = actionType;
-              this.isOpen = true;
-          },
-          openDeletePanel: function() {
-            this.actionType = "delete" + this.actionType;
-          },
-          openAddPanel: function() {
-            this.actionType = this.actionType.replace('delete', '')
-          }
-        },
-      computed: {
-          alerts() {
-            return this.$store.state.alert.all;
-          },
-          announcements: {
-            cache: false,
-            get: function() {         
-              return this.$store
-                  .state
-                  .announcement
-                  .all
-            }
-          },
-          vacations: {
-            get: function() {
-              return this.$store.state.vacation.all;
-            },
-            set: function() {
-              return this.$store.state.vacation.all;
-            }
-          },
-          birthdays: {
-            cache: false,
-            get: function() {
-              let all = this.$store.state.birthday.all;
-              return all;
-            }
-          },
-          events: {
-            get: function() {
-              return this.$store.state.event.all;
-            }
-          },
-          deployments: {
-            cache: false,
-            get: function() {       
-              this.numberOfSlides = this.$store.state.deployment.all.length;
-              return this.$store
-                  .state
-                  .deployment
-                  .all
-            }
-          },
-        },
-      watch: {
-        vacations() {
-          this.vacations = this.$store.state.vacation.all;
-        }
-      }
-    }
+export default {
+  name: 'MenuButton',
+    components: {
+      DeleteModals,
+      AddModals
+    },
+    props: ['url'],
+    data: function(){
+        return {
+          hostURL: this.url,
+          isOpen: false,
+          fetchURL: '', 
+          buttonText: '', 
+          actionType: 'Vacation',
+        };
+    },
+    methods: {
+      // This method is for when the user clicks selects an action. It will assign the endpoint URL and the actiontype the user has selected.
+      openModal: function(route, actionType) {
+          this.fetchURL = route;
+          this.actionType = actionType;
+          this.isOpen = true;
+      },
+      // This method is for when the user clicks on 'Add' at the top of the screen. 
+      openAddPanel: function() {
+        this.actionType = this.actionType.replace('delete', '')
+      },
+      // This method is for when the user clicks on 'Delete' at the top of the screen. 
+      openDeletePanel: function() {
+        this.actionType = "delete" + this.actionType;
+      },
+    },
+  }
 </script>
 
+<!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->
 <style scoped>
-
 .modal__inner, .modal__title, .modal__btn--close {
   background-color: #555555;
 }

@@ -303,7 +303,7 @@
             }, 3000);                                                             // after a 3000 millisecond delay.
           });
 
-                fetch(
+          fetch(
             'https://orbisinc.atlassian.net/rest/api/3/search?jql=status%20changed%20during%20(-1h%2Cnow())',
           {
             method: "GET",

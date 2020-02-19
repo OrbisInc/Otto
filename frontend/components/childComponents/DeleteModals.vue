@@ -1,67 +1,36 @@
-<!-- This eventItem is a child component. It is used in another component called MenuButton.
- It serves as a container for the deletion modal template.
- This component will take in a few props (arguments) to construct itself. -->
+<!-- 
+This eventItem is a child component. It is used in another component called MenuButton.
+It serves as a container for the deletion modal template.
+This component will take in a few props (arguments) to construct itself. 
+-->
 
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
 <template>
     <div>
-        <!-- This section is responsible for all of the 'delete' modal templates. -->
-        <!-- Delete Alert Template -->
-        <template v-if="this.actionType == 'deleteAlert'">
+        <!-- This section is responsible for the 'DELETE' modal template. -->
+        <template>
             <br>
             <label>Select something to delete:</label>
-            <select id="birthday" v-model="deletionIDs">
+            <select v-if="this.actionType == 'deleteAlert'" id="birthday" v-model="deletionIDs">
                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in alerts">{{m.message}}</option>
             </select>
-        </template>
-
-        <!-- Delete Announcement Template -->
-        <template v-if="this.actionType == 'deleteAnnouncement'">
-            <br>
-            <label>Select something to delete:</label>
-            <select id="birthday" v-model="deletionIDs">
+            <select v-if="this.actionType == 'deleteAnnouncement'" id="birthday" v-model="deletionIDs">
                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in announcements">{{m.message}}</option>
             </select>
-        </template>
-
-        <!-- Delete Birthday Template -->
-        <template v-if="this.actionType == 'deleteBirthday'">
-            <br>
-            <label>Select something to delete:</label>
-            <select id="birthday" v-model="deletionIDs">
+            <select v-if="this.actionType == 'deleteBirthday'" id="birthday" v-model="deletionIDs">
                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in birthdays">{{m.name}}</option>
             </select>
-        </template>
-
-        <!-- Delete Deployment Template -->
-        <template v-if="this.actionType == 'deleteDeployment'">
-            <br>
-            <label>Select something to delete:</label>
-            <select id="birthday" v-model="deletionIDs">
+            <select v-if="this.actionType == 'deleteDeployment'" id="birthday" v-model="deletionIDs">
                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in deployments">{{m.school}}</option>
             </select>
-        </template>
-
-        <!-- Delete Event Template -->
-        <template v-if="this.actionType == 'deleteEvent'">
-            <br>
-            <label>Select something to delete:</label>
-            <select id="birthday" v-model="deletionIDs">
+            <select v-if="this.actionType == 'deleteEvent'" id="birthday" v-model="deletionIDs">
                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in events">{{m.title}}</option>
             </select>
-        </template>
-
-        <!-- Delete Vacation Template -->
-        <template v-if="this.actionType == 'deleteVacation'">
-            <br>
-            <label>Select something to delete:</label>
-            <select id="birthday" v-model="deletionIDs">
+            <select v-if="this.actionType == 'deleteVacation'" id="birthday" v-model="deletionIDs">
                 <option v-bind:value="[index, m.id]" :key="m.id" v-for="(m, index) in vacations">{{m.name}}</option>
             </select>
         </template>
-
         <button v-if='this.actionType.includes("delete")' class="btn__default--text btn--info" type="button" @click="deleteRequest">Delete</button>
-
     </div>
 </template>
 
@@ -73,17 +42,17 @@
       data() {
           return {
               actionType: '',
-              databaseTableName: '',
               fetchURL: '',
               deletionIDs: '',
           };
       },
       methods: {
-          // dissectTime() will utilize the props (arguments) taken in by the component, and parse them into the relevant data for the module
+          // dissectActionType() will utilize the props (arguments) taken in by the component, and parse them into the relevant data for the module
           dissectActionType: function() {
               this.actionType = this.actionTypeProp;
               this.fetchURL = this.fetchURLProp;
           },
+         // deleteRequest() will send a deletion request to the server.
           deleteRequest() {
             var arrayToRemoveFrom = this.actionType.replace('delete', '');
             var headers = {
@@ -180,6 +149,7 @@
   };
 </script>
 
+<!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->
 <style scoped>
     .modal__inner, .modal__title, .modal__btn--close {
     background-color: #555555;

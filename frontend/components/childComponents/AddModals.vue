@@ -5,7 +5,8 @@
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
 <template>
     <div>
-      <!-- This section is responsible for all of the 'add' modal templates. -->
+      <!-- This section is responsible for all of the 'ADD' modal templates. -->
+
       <!-- Add Announcement Template -->
       <template v-if="this.actionType == 'Announcement'">
           <div class="display--flex flex--column">
@@ -105,7 +106,6 @@
       </template>
       <br>
       <button v-if='!this.actionType.includes("delete")' class="btn__default--text btn--info" type="button" @click="postRequest">Add</button>
-
     </div>
 </template>
 
@@ -145,8 +145,6 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               fetchURL: '', 
               buttonText: '', 
               actionType: 'Vacation',
-
-              deletionIDs: '',
           };
       },
       methods: {
@@ -174,9 +172,8 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
               expiresAt: this.expirationDate,
               severity: this.alertSeverity,
               highAlertDate: this.highAlertDate,
-              
             }
-              fetch(this.fetchURL, {
+            fetch(this.fetchURL, {
               method: "POST",
               headers: headers,
               body:  JSON.stringify(data)
@@ -200,7 +197,6 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
           },
       },
       mounted() {
-          console.log(this.actionTypeProp);
           this.dissectActionType();
       },
       watch: {
@@ -258,8 +254,8 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
   };
 </script>
 
+<!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->
 <style scoped>
-
   .modal__inner, .modal__title, .modal__btn--close {
     background-color: #555555;
   }
@@ -279,7 +275,6 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
   textarea {
       color: white;
   }
-
 
   .nav--interaction {
     width: 15.0em;
