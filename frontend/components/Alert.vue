@@ -57,4 +57,21 @@ export default {
   .highAlertMessageDate {
     color: yellow;
   }
+
+  .tckr-wrap {
+    height: 9%;
+    z-index: -300;
+    font-size: 10.0em;
+    display: relative;
+  }
+
+  .tckr__item {
+    font-size: 1.05em;
+    margin: auto;
+    padding: auto;
+    display: inline-block;
+    vertical-align: center;
+    text-align: center;
+
+  }
 </style>

@@ -167,7 +167,7 @@ textarea.ticker__item, input.ticker__item, .vue-ticker__item input {
   
   .tckr-wrap .tckr__item {
     position: relative;
-    top: -70px;
+    top: -50px;
     display: inline-block;
     padding: 0 5rem;
     font-size: 40px;
