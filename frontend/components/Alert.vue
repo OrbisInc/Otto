@@ -7,10 +7,12 @@
       <div :key="m.id" v-for="m in alerts" class="tckr__item">{{m.message}}</div>
     </div>
     <div v-if="m.severity == 'High'" :key="m.id" v-for="m in alerts" class="highAlert">
-      <div class="highAlertMessage">
-        {{ m.message }}
+      <div class="highAlertMessageContainer">
+        <div class="highAlertMessage"> 
+          {{ m.message }}
+        </div>
         <div class="highAlertMessageDate">
-          {{m.highAlertDate}}
+          {{m.highAlertDate}} EGG
         </div>
       </div>
       <div class="highAlertSymbol">
@@ -26,6 +28,11 @@ export default {
     alerts() {
       return this.$store.state.alert.all;
     }
+  },
+  watch: {
+    alerts() {
+      console.log(this.alerts);
+    }
   }
 };
 </script>
@@ -35,27 +42,32 @@ export default {
   .highAlert {
     position: absolute;
     left: 0;
-    bottom: 9.0em;
+    bottom: 0;
     width: 100%;
     overflow: hidden;
     height: 6.5rem;
     padding-left: 100%;
     box-sizing: content-box;
     background-color: red;
-    height: 8%;
-    z-index: 10000 !important;
+    height: 100%;
+    z-index: 101 !important;
   }
-  .highAlertMessage {
-    position: fixed;
+  .highAlertMessageContainer {
+    position: absolute;
+    bottom: 0;
     left: 0;
-    font-size: 3.0em;
-    width: 100%;
-    height: 7.5em;
-    padding-left: 1.0em;
-    background-color: red;
+    font-size: 0.5em;
+    margin-left: 0.5em;
+    z-index: 10000 !important;
+    margin-bottom: 0.85em;
   }
   .highAlertMessageDate {
+    position: absolute;
+    bottom: -50px;
+    font-size: 0.6em;
+    left: 0;
     color: yellow;
+    z-index: 10001 !important;
   }
 
   .tckr-wrap {
