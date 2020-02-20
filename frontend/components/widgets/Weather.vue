@@ -1,8 +1,8 @@
-<!-- The component widget for the weather pane. This component is used for displaying the current weather from an API (openweather). The 
-component is used to fetch information from the API using a key. The Fetch API method is then scheduled to repeat at a certain interval 
-set in in the methods below. The current date is displayed in a method below as well.
+<!-- 
+    Weather.Vue is a right hand side widget. This component is used for displaying the current weather from an API (openweather). The 
+    component is used to fetch information from the API using a key. The Fetch API method is then scheduled to repeat at a certain interval 
+    set in in the methods below. The current date is displayed in a method below as well.
  -->
-
 
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
 <template>
@@ -10,7 +10,7 @@ set in in the methods below. The current date is displayed in a method below as 
     <p class="weatherData">Overcast: {{ this.overcast }}</p>
     <p class="weatherData">Temperature: {{ this.temperature }}°C</p>
     <p class="weatherData">Feels Like: {{ this.temperatureFeelsLike }}°C</p>
-    <span class="weatherData dateHeader">{{this.currentDate}}</span>
+    <span class="weatherData dateHeader">{{ this.currentDate }}</span>
   </div>
 </template>
 
@@ -29,7 +29,7 @@ export default {
     };
   },
   methods: {
-    // A function to retrieve the date in a format that looks nice.
+    // getDate() will retrieve the date in a format that looks nice.
     getDate: function() {
       var options = {
         weekday: "long",
@@ -40,16 +40,16 @@ export default {
       var today = new Date();
       var hours = today.getHours();
       var minutes = today.getMinutes();
-      var ampm = hours >= 12 ? 'pm' : 'am';
+      var ampm = hours >= 12 ? "pm" : "am";
       hours = hours % 12;
       hours = hours ? hours : 12; // the hour '0' should be '12'
-      minutes = minutes < 10 ? '0'+ minutes : minutes;
-      var strTime = hours + ':' + minutes + ' ' + ampm;
-      var dateTime = today.toLocaleDateString("en-US", options) + ' ' + strTime
-      return dateTime
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      var strTime = hours + ":" + minutes + " " + ampm;
+      var dateTime = today.toLocaleDateString("en-US", options) + " " + strTime;
+      return dateTime;
     },
 
-    // Using the Fetch API to request the weather from openweather. The apiKey attached to our account is used here for verification.
+    // weatherAPICall() will request the weather from openweather. The apiKey attached to our account is used here for verification.
     weatherAPICall: function() {
       fetch(
         "http://api.openweathermap.org/data/2.5/forecast?id=5969785&APPID=2917c463cf5bbabd5602c2e4c6e388a8",
@@ -69,7 +69,7 @@ export default {
         });
     },
 
-    // The node-scheduler will repeat given the functions given on the given schedule. Updating the weather and time in this case.
+    // scheduledWeatherAPICall() will repeat the given function on a given schedule.
     scheduledWeatherAPICall: function() {
       var self = this;
       schedule.scheduleJob("*/1 * * * *", function() {
@@ -77,6 +77,8 @@ export default {
         self.weatherAPICall();
       });
     },
+
+   // scheduleTimeUpdate() will repeat the given function on a given schedule.
     scheduleTimeUpdate: function() {
       var self = this;
       schedule.scheduleJob("*/1 * * * * *", function() {
@@ -84,44 +86,44 @@ export default {
       });
     }
   },
-  
+
   // Initializing the module by giving the starting values for the weather and time, and starting the scheduled API Calls.
   mounted() {
     this.weatherAPICall();
     this.currentDate = this.getDate();
     this.scheduledWeatherAPICall();
-    this.scheduleTimeUpdate()
+    this.scheduleTimeUpdate();
   }
 };
 </script>
 
 <!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->
 <style scoped>
-.weatherData {
-  margin: 0;
-  padding: 0;
-  font-size: 1.3em;
-}
-.containerColor {
-  background-color: rgb(102, 102, 102);
-  color: white;
-  font-size: 2em;
-  position: relative;
-}
-.dateHeader {
-  background-color: rgb(64, 64, 64);
-  color: rgb(184, 184, 184);
-  text-align: center;
-  height: 20%;
-  font-size: 1.3em;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  padding: auto;
-}
-.weatherImage {
-  height: 4em;
-  width: 8em;
-}
+  .weatherData {
+    margin: 0;
+    padding: 0;
+    font-size: 1.3em;
+  }
+  .containerColor {
+    background-color: rgb(102, 102, 102);
+    color: white;
+    font-size: 2em;
+    position: relative;
+  }
+  .dateHeader {
+    background-color: rgb(64, 64, 64);
+    color: rgb(184, 184, 184);
+    text-align: center;
+    height: 20%;
+    font-size: 1.3em;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: auto;
+  }
+  .weatherImage {
+    height: 4em;
+    width: 8em;
+  }
 </style>

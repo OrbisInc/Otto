@@ -1,13 +1,13 @@
 <!-- 
-This eventItem is a child component. It is used in another component called MenuButton.
-It serves as a container for the deletion modal template.
-This component will take in a few props (arguments) to construct itself. 
+    DeleteModals.vue is a child component. It is used in another component called MenuButton.
+    It serves as a container for the deletion modal template.
+    This component will take in a few props (arguments) to construct itself. 
 -->
 
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
+<!-- This HTML is responsible for the 'DELETE' modal template. -->
 <template>
     <div>
-        <!-- This section is responsible for the 'DELETE' modal template. -->
         <template>
             <br>
             <label>Select something to delete:</label>
@@ -47,8 +47,8 @@ This component will take in a few props (arguments) to construct itself.
           };
       },
       methods: {
-          // dissectActionType() will utilize the props (arguments) taken in by the component, and parse them into the relevant data for the module
-          dissectActionType: function() {
+          // constructor() will utilize the props (arguments) taken in by the component, and parse them into the relevant data for the module
+          constructor: function() {
               this.actionType = this.actionTypeProp;
               this.fetchURL = this.fetchURLProp;
           },
@@ -92,130 +92,105 @@ This component will take in a few props (arguments) to construct itself.
       },
       mounted() {
           console.log(this.actionTypeProp);
-          this.dissectActionType();
+          this.constructor();
       },
       watch: {
           actionTypeProp() {
-              this.dissectActionType();
+              this.constructor();
           },
           fetchURLProp() {
-              this.dissectActionType();
+              this.constructor();
           }
       },
       computed: {
-          alerts() {
-            return this.$store.state.alert.all;
-          },
-          announcements: {
-            cache: false,
-            get: function() {         
-              return this.$store
-                  .state
-                  .announcement
-                  .all
-            }
-          },
-          vacations: {
-            get: function() {
-              return this.$store.state.vacation.all;
-            },
-            set: function() {
-              return this.$store.state.vacation.all;
-            }
-          },
-          birthdays: {
-            cache: false,
-            get: function() {
-              let all = this.$store.state.birthday.all;
-              return all;
-            }
-          },
-          events: {
-            get: function() {
-              return this.$store.state.event.all;
-            }
-          },
-          deployments: {
-            cache: false,
-            get: function() {       
-              this.numberOfSlides = this.$store.state.deployment.all.length;
-              return this.$store
-                  .state
-                  .deployment
-                  .all
-            }
+        alerts() {
+          return this.$store.state.alert.all;
         },
-    },
+        announcements() {
+          return this.$store.state.announcement.all;
+        },
+        birthdays() {
+          return this.$store.state.birthday.all;
+        },
+        deployments() {
+          return this.$store.state.deployment.all;
+        },
+        events() {
+          return this.$store.state.event.all;
+        },
+        vacations() {
+          return this.$store.state.vacation.all;
+        },
+      },
   };
 </script>
 
 <!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. -->
 <style scoped>
-    .modal__inner, .modal__title, .modal__btn--close {
-    background-color: #555555;
-    }
+  .modal__inner, .modal__title, .modal__btn--close {
+  background-color: #555555;
+  }
 
-    .modal__title, .modal__btn--close { 
-    color: #d8d8d8;
-    }
-    ::placeholder {
-    color: white;
-    opacity: 1;
-    }
+  .modal__title, .modal__btn--close { 
+  color: #d8d8d8;
+  }
+  ::placeholder {
+  color: white;
+  opacity: 1;
+  }
 
-    input[type=date] {
-        color: white;
-    }
+  input[type=date] {
+      color: white;
+  }
 
-    textarea {
-        color: white;
-    }
+  textarea {
+      color: white;
+  }
 
+  .nav--interaction {
+  width: 15.0em;
+  height: 15.0em;
+  max-width: 15.0em;
+  text-align: center;
+  }
 
-    .nav--interaction {
-    width: 15.0em;
-    height: 15.0em;
-    max-width: 15.0em;
-    text-align: center;
-    }
+  .nav--interaction__list {
+  text-align: center;
+  }
 
-    .nav--interaction__list {
-    text-align: center;
-    }
+  .nav--interaction__button {
+  font-size: 1.7em;
+  margin-top: 0.7em;
+  display: block;
+  text-align: center;
+  width: 100%;
+  }
 
-    .nav--interaction__button {
-    font-size: 1.7em;
-    margin-top: 0.7em;
-    display: block;
-    text-align: center;
-    width: 100%;
-    }
+  .nav--interaction__button:hover {
+  background-color: rgb(73, 64, 64);
+  }
 
-    .nav--interaction__button:hover {
-    background-color: rgb(73, 64, 64);
-    }
+  .nav--interaction--modified {
+  height: 30.0em !important;
+  width: 30.0em !important;
+  max-width: 300em;
+  }
 
-    .nav--interaction--modified {
-    height: 30.0em !important;
-    width: 30.0em !important;
-    max-width: 300em;
-    }
+  .nav--interaction__title {
+  font-size: 2.0em;
+  margin-bottom: 2.0em;
+  }
 
-    .nav--interaction__title {
-    font-size: 2.0em;
-    margin-bottom: 2.0em;
-    }
+  .modal__inner {
+  font-size: 1.5em;
+  }
 
-    .modal__inner {
-    font-size: 1.5em;
-    }
+  .modal__title {
+  font-size: 1.6em;
+  margin-top: 0.5em;
+  }
 
-    .modal__title {
-    font-size: 1.6em;
-    margin-top: 0.5em;
-    }
-
-    .btn__default--text {
-        font-size: 1.0em;
-    }
+  .btn__default--text {
+      font-size: 1.0em;
+  }
 </style>

@@ -1,6 +1,9 @@
-<!-- The component widget for the vacations pane (bottom of the Right hand side). This component is used for displaying vacations from
-a database. There are multiple methods used here. Some of the methods are helper methods for simple use such as getting dates - the other methods are to construct
-a series of arrays to display the data in the way we want.
+<!-- 
+      Vacations.vue is a right hand side widget. It is located in the vacations pane underneath Events. This component
+      will pull and display informatoin in the database. It will only select the vacations that occur within
+      the next four months, and it will only select a maximum of four of them. Any vacations that are currently
+      occuring will show the date the individual comes back, and the excess will be in upcoming and will show the day 
+      the individual leaves. 
  -->
 
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
@@ -65,7 +68,7 @@ export default {
       }
     },
 
-    // This function will duplicate the vacations array - and then filter through the array for elements that only occur within the next three months.
+    // createCutOffVacations() will duplicate the vacations array - and then filter through the array for elements that only occur within the next three months.
     // Additionally, it will fetch up to four vacations before breaking the loop. It then returns that array.
     createCutOffVacations: function() {
       let futureDate = this.getCutOffDate();
@@ -88,8 +91,9 @@ export default {
       return cutOffArray;
     },
 
-    // This function will take in the vacations from the createCutOffVacations method - and then sort it into the current vacations and
-    // upcoming vacations by comparing dates. This returns two arrays.
+    // splitArrays() take in the vacations from createCutOffVacations() - and then sort it into the current vacations and
+    // upcoming vacations by comparing dates. This returns two arrays. Within this function it parse and reassign the dates 
+    // so they use a more human-friendly format.
     splitArrays: function() {
       let currentVacations = [];
       let upcomingVacations = [];
@@ -140,7 +144,7 @@ export default {
       return [currentArray, upcomingArray];
     },
 
-    // This function will call both previous functions to construct the arrays we want to display.
+    // createVacationsArray() will call both previous array functions to construct the arrays we want to display.
     createVacationsArray: function() {
       if (this.vacations.length != 0) {
         this.cutOffVacationArray = this.createCutOffVacations();
@@ -152,7 +156,7 @@ export default {
       }
     },
 
-    // A function that uses an AJAX fetch to delete something in the database.
+    // deleteVacation() uses an AJAX fetch to delete something in the database.
     deleteVacation(uniqueID) {
       var headers = {
         "Content-Type": "application/json"
@@ -175,7 +179,7 @@ export default {
       });
     },
 
-    // The node-scheduler will repeat given the functions given on the given schedule.
+    // scheduledDatabaseMaintenance() will repeat given the functions given on the given schedule.
     scheduledDatabaseMaintenance: function() {
       var self = this;
       schedule.scheduleJob("*/1 * * * *", function() {
@@ -199,11 +203,9 @@ export default {
     this.scheduledDatabaseMaintenance();
   },
   computed: {
-    vacations: {
-      get: function() {
-        return this.$store.state.vacation.all;
-      }
-    } 
+    vacations() {
+      return this.$store.state.vacation.all;
+    },
   },
   watch: {
     vacations() {

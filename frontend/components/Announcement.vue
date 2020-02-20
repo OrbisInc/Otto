@@ -1,6 +1,8 @@
-<!-- The component for the Announcement Pane (top-left) This utilizes a plug-in called tiny slider which actively slides through the created div tags beneath it. The div tags
-are created dynamically through the v-for loop. They loop through all announcements currently present in the database. This also has code beneath for refreshing the slider so it dynamically updates. 
-The variable 'renderSlider' which is utilized in a v-if is used. It changes to false when a new database item is loaded causing tiny slider to no longer render. It changes back to true immediately after which refreshes tiny slider.
+<!-- 
+    Announcement.vue is for the Announcement Pane (top-left) This utilizes a plug-in called tiny slider which actively slides through the created div tags beneath it.
+    The div tags are created dynamically through the v-for loop. They loop through all announcements currently present in the database. This also has code 
+    beneath for refreshing the slider so it dynamically updates. The variable 'renderSlider' which is utilized in a v-if is used to do this.
+    It changes to false when a new database item is loaded causing tiny slider to no longer render. It changes back to true immediately after which refreshes tiny slider.
  -->
 
 <template>
@@ -31,6 +33,7 @@ The variable 'renderSlider' which is utilized in a v-if is used. It changes to f
 <script>
 import schedule from "node-schedule";
 import Vue from "vue";
+
 export default {
   name: "Announcement",
   props: ["url"],
@@ -53,6 +56,7 @@ export default {
     };
   },
   methods: {
+    // These two methods are helper methods used in the methods below.
     getCurrentDate: function() {
       return new Date()
         .toJSON()
@@ -68,6 +72,8 @@ export default {
         return false;
       }
     },
+
+    // deleteAnnouncement() uses an AJAX fetch to delete something in the database. It is called in the scheduler below.
     deleteAnnouncement(uniqueID) {
       var headers = {
         "Content-Type": "application/json"
@@ -89,6 +95,8 @@ export default {
         body: JSON.stringify(data)
       });
     },
+
+    // scheduledDatabaseMaintenance() will repeat the given function on a given schedule.
     scheduledDatabaseMaintenance: function() {
       var self = this;
       schedule.scheduleJob("*/1 * * * *", function() {
@@ -123,12 +131,8 @@ export default {
     }
   },
   computed: {
-    announcements: {
-      cache: false,
-      get: function() {
-        this.numberOfSlides = this.$store.state.announcement.all.length;
-        return this.$store.state.announcement.all;
-      }
+    announcements() {
+      return this.$store.state.announcement.all;
     }
   }
 };

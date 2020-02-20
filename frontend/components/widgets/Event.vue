@@ -1,13 +1,14 @@
-<!-- The component widget for the events pane (bottom of the Right hand side). This component is used for displaying an event from
-the database. There are multiple methods used here. Some of the methods are helper methods for simple use such as getting dates - the other methods are to construct
-a series of arrays to display the data in the way that we want.
+<!-- 
+    Event.vue is a right hand side widget. It is located in the events pane on the right hand side underneath Birthdays. This component is used for displaying an event from
+    the database. The widget will only select the next four upcoming events from the database. Any events that are happening today will be displayed in today, and the excess
+    in 'upcoming events'. The events themselves are <EventItems/>  which can be found in child components. 
  -->
 
 <!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
 <template>
-    <div class="ticker__item in--sidebar padding--a--s noBorder">
-        <p>Happening Today:</p>
-        <span v-if="this.events.length">
+  <div class="ticker__item in--sidebar padding--a--s noBorder">
+    <p>Happening Today:</p>
+    <span v-if="this.events.length">
       <span :key="m.id" v-for="m in currentEvents">
         <EventItem
           v-if="currentEvents.length"
@@ -17,10 +18,10 @@ a series of arrays to display the data in the way that we want.
           :eventLocation="m.location"
         />
       </span>
-        </span>
+    </span>
 
-        <p>Up Next:</p>
-        <span :key="m.id" v-for="m in upcomingEvents">
+    <p>Up Next:</p>
+    <span :key="m.id" v-for="m in upcomingEvents">
       <EventItem
         v-if="upcomingEvents.length"
         :title="m.title"
@@ -29,7 +30,7 @@ a series of arrays to display the data in the way that we want.
         :eventLocation="m.location"
       />
     </span>
-    </div>
+  </div>
 </template>
 
 <!-- The scripts for the component. This script contains a few data attributes and methods for this component. -->
@@ -77,7 +78,7 @@ export default {
       }
     },
 
-    // This function will duplicate the store events array, sort the array, and then construct a new array with the next three upcoming.
+    // createCutOffEvents() will duplicate the store events array, sort the array, and then construct a new array with the next three upcoming.
     createCutOffEvents: function() {
       let temporaryArray = [...this.events];
       let cutOffArray = [];
@@ -94,8 +95,8 @@ export default {
       return cutOffArray;
     },
 
-    // This function will analyze the cut off Array and split them into two arrays by comparing the dates. 
-    // The two created arrays the events currently happening, and the events upcoming.
+    // splitArrays() will analyze the cut off Array and split them into two arrays by comparing the dates.
+    // The two created arrays are events currently happening, and the events upcoming.
     splitArrays: function() {
       let currentEvents = [];
       let upcomingEvents = [];
@@ -114,7 +115,7 @@ export default {
       return [currentEvents, upcomingEvents];
     },
 
-    // This function will call the previous methods to construct the arrays wanted with some logic to make sure the store events array exists.
+    // createEventsArray() will call the previous array methods to construct the arrays wanted with some logic to make sure the store events array exists.
     createEventsArray: function() {
       if (this.events.length != 0) {
         this.cutOffEventArray = this.createCutOffEvents();
@@ -126,7 +127,7 @@ export default {
       }
     },
 
-    // A function that uses an AJAX fetch to delete something in the database.
+    // deleteEvent() uses an AJAX fetch to delete something in the database.  It is called in the scheduler below.
     deleteEvent(uniqueID) {
       var headers = {
         "Content-Type": "application/json"
@@ -149,7 +150,7 @@ export default {
       });
     },
 
-    // The node-scheduler will repeat given the functions given on the given schedule.
+    // scheduledDatabaseMaintenance() will repeat the given function on a given schedule.
     scheduledDatabaseMaintenance: function() {
       var self = this;
       schedule.scheduleJob("*/1 * * * *", function() {
@@ -173,11 +174,9 @@ export default {
     this.scheduledDatabaseMaintenance();
   },
   computed: {
-    events: {
-      get: function() {
-        return this.$store.state.event.all;
-      }
-    }
+    events() {
+      return this.$store.state.event.all;
+    },
   },
   watch: {
     events() {

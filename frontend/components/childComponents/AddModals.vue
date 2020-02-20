@@ -1,11 +1,13 @@
-<!-- This eventItem is a child component. It is used in another component called MenuButton.
- It serves as a container for the deletion modal template.
- This component will take in a few props (arguments) to construct itself. -->
+<!-- 
+      AddModals.vue is a child component. It is used in another component called MenuButton.
+      It serves as a container for the adding modals template and relevant methods.
+      This component will take in a few props (arguments) to construct itself. 
+-->
 
-<!-- The template for the component. This template formats the event item using spiral robots CSS and HTML -->
+<!-- The template for the component. This template formats the component using spiral robots CSS and HTML -->
+<!-- This HTML is responsible for all of the 'ADD' modal templates. -->
 <template>
     <div>
-      <!-- This section is responsible for all of the 'ADD' modal templates. -->
 
       <!-- Add Announcement Template -->
       <template v-if="this.actionType == 'Announcement'">
@@ -115,7 +117,7 @@ import VueTimepicker from 'vue2-timepicker'
 import 'vue2-timepicker/dist/VueTimepicker.css'
 
   export default {
-      name: "DeleteModals",
+      name: "AddModals",
       props: ["actionTypeProp", "fetchURLProp"],
       components: {
         VueTimepicker,
@@ -148,11 +150,12 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
           };
       },
       methods: {
-          // dissectTime() will utilize the props (arguments) taken in by the component, and parse them into the relevant data for the module
-          dissectActionType: function() {
+          // constructor() will utilize the props (arguments) taken in by the component, and parse them into the relevant data for the module.
+          constructor: function() {
               this.actionType = this.actionTypeProp;
               this.fetchURL = this.fetchURLProp;
           },
+          // postRequest() will send a post request to the server to add data. All data is included here - however only relevant data is actually input to the server.
           postRequest() {
             var headers = {
               "Content-Type": "application/json"                         
@@ -197,60 +200,36 @@ import 'vue2-timepicker/dist/VueTimepicker.css'
           },
       },
       mounted() {
-          this.dissectActionType();
+          this.constructor();
       },
       watch: {
           actionTypeProp() {
-              this.dissectActionType();
+              this.constructor();
           },
           fetchURLProp() {
-              this.dissectActionType();
+              this.constructor();
           }
       },
       computed: {
-          alerts() {
-            return this.$store.state.alert.all;
-          },
-          announcements: {
-            cache: false,
-            get: function() {         
-              return this.$store
-                  .state
-                  .announcement
-                  .all
-            }
-          },
-          vacations: {
-            get: function() {
-              return this.$store.state.vacation.all;
-            },
-            set: function() {
-              return this.$store.state.vacation.all;
-            }
-          },
-          birthdays: {
-            cache: false,
-            get: function() {
-              let all = this.$store.state.birthday.all;
-              return all;
-            }
-          },
-          events: {
-            get: function() {
-              return this.$store.state.event.all;
-            }
-          },
-          deployments: {
-            cache: false,
-            get: function() {       
-              this.numberOfSlides = this.$store.state.deployment.all.length;
-              return this.$store
-                  .state
-                  .deployment
-                  .all
-            }
+        alerts() {
+          return this.$store.state.alert.all;
         },
-    },
+        announcements() {
+          return this.$store.state.announcement.all;
+        },
+        birthdays() {
+          return this.$store.state.birthday.all;
+        },
+        deployments() {
+          return this.$store.state.deployment.all;
+        },
+        events() {
+          return this.$store.state.event.all;
+        },
+        vacations() {
+          return this.$store.state.vacation.all;
+        },
+      },
   };
 </script>
 
