@@ -1,5 +1,24 @@
-<!-- This index serves as the main page for otto. It is populated by multiple components. A fe methods are located here - including the event to load data for announcements and alert
-as well as registering the socket events. -->
+<!-- 
+    This index serves as the main vue component for Otto. It is populated by multiple components:
+                Event,
+                Birthday,
+                Weather,
+                Vacation,
+
+                Jira,
+                ZenDesk,
+                Announcement,
+                Deployment,
+
+                Alert,
+                MenuButton,
+
+    These components separate and modularize all parts of Otto to their respective containers.  
+
+    There are a few methods here, which are used to register and set up the socket events for the components that require a database.
+
+    These methods are called immediately upon the index component being loaded. 
+ -->
 
 <template>
   <div class="voltron">
@@ -21,20 +40,21 @@ as well as registering the socket events. -->
 </template>
 
 <script>
-// Importing widgets
+    // Importing widgets
     import Weather from "../components/widgets/Weather"
     import Birthday from "../components/widgets/Birthday";
     import Event from "../components/widgets/Event";
     import Vacation from "../components/widgets/Vacation";
 
-// Importing the main panes 
-    import Alert from "../components/Alert";
-    import MenuButton from "../components/MenuButton";
+    // Importing the main panes 
     import Deployment from "../components/Deployment";
     import Announcement from "../components/Announcement";
     import Jira from "../components/Jira";
     import ZenDesk from "../components/ZenDesk";
-// Importing Vue
+
+    import Alert from "../components/Alert";
+    import MenuButton from "../components/MenuButton";
+    // Importing Vue
     import Vue from 'vue'
 
     export default {

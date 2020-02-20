@@ -22,10 +22,10 @@
         <div class="ticker__item tns-item" :key="m.Id" v-for="m in deploymentFormatted">
           <div class="testtest">
             {{m.deploymentDate}}
-            <br />
+            <br/>
             {{m.school}}
-            <br />
-            {{ m.message}}
+            <br/>
+            {{m.message}}
           </div>
         </div>
       </vue-tiny-slider>

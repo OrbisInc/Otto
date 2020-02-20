@@ -140,8 +140,8 @@ export default {
 
 <!-- Any styles for this component. These styles are scoped meaning they only hold value within the component. --> 
 <style scoped>
-.tns-nav {
-  width: 3em;
-  height: 3em;
-}
+  .tns-nav {
+    width: 3em;
+    height: 3em;
+  }
 </style>
