@@ -131,7 +131,7 @@ There are two types of modals, delete modals and add modals. Both modals are con
   }
 
   #otto__actions {
-      width: 4.5em;
+      width: 4.5em;    
       height: 4.5em;
   }
 
